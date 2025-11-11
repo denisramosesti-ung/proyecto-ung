@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Interacción con APIs</title>
-  <link rel="stylesheet" href="css/estilos.css">
+  <link rel="stylesheet" href="css/estilos.css" />
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
   <style>
     /* Fondo general */
@@ -14,7 +14,7 @@
       align-items: center;
       justify-content: center;
       background:
-        linear-gradient(135deg, rgba(0,114,255,0.45), rgba(0,198,255,0.45)),
+        linear-gradient(135deg, rgba(0, 114, 255, 0.45), rgba(0, 198, 255, 0.45)),
         url("fondo.avif") center center / cover no-repeat fixed;
       font-family: "Poppins", sans-serif;
       margin: 0;
@@ -48,7 +48,8 @@
       gap: 8px;
     }
 
-    input, textarea {
+    input,
+    textarea {
       width: 100%;
       border: 2px solid #e5e7eb;
       border-radius: 10px;
@@ -59,9 +60,10 @@
       transition: border-color 0.2s;
     }
 
-    input:focus, textarea:focus {
+    input:focus,
+    textarea:focus {
       border-color: #0072ff;
-      box-shadow: 0 0 6px rgba(0,114,255,0.2);
+      box-shadow: 0 0 6px rgba(0, 114, 255, 0.2);
     }
 
     button {
@@ -75,14 +77,18 @@
       transition: background 0.25s ease;
     }
 
-    button:hover { background: #00c6ff; }
+    button:hover {
+      background: #00c6ff;
+    }
 
     .btn-rojo {
       background: #e63946;
       margin-top: 15px;
     }
 
-    .btn-rojo:hover { background: #ff5f5f; }
+    .btn-rojo:hover {
+      background: #ff5f5f;
+    }
 
     hr {
       border: 0;
@@ -97,10 +103,11 @@
       border-radius: 12px;
       margin-top: 15px;
       object-fit: cover;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     }
 
-    #resultadoCorreo, #resultadoClima {
+    #resultadoCorreo,
+    #resultadoClima {
       margin-top: 10px;
       font-weight: bold;
       text-align: center;
@@ -114,35 +121,39 @@
 
     <!-- API de Correo -->
     <h2>📩 Enviar Mensaje</h2>
-    <input type="text" id="nombreCorreo" placeholder="Nombre y Apellido">
-    <input type="email" id="emailUsuario" placeholder="Correo electrónico">
+    <input type="text" id="nombreCorreo" placeholder="Nombre y Apellido" />
+    <input type="email" id="emailUsuario" placeholder="Correo electrónico" />
     <textarea id="mensajeCorreo" rows="3" placeholder="Escribí tu mensaje..."></textarea>
     <button id="btnCorreo">Enviar</button>
     <p id="resultadoCorreo"></p>
 
-    <hr>
+    <hr />
 
     <!-- API de Imagen Aleatoria -->
     <h2>🐱 Imagen Aleatoria</h2>
     <button id="btnImagen">Mostrar Imagen</button>
-    <img id="imagenAleatoria" src="" alt="">
+    <img id="imagenAleatoria" src="" alt="" />
 
-    <hr>
+    <hr />
 
-    <!-- API de Clima (Open-Meteo) -->
+    <!-- API de Clima (Global sin key) -->
     <h2>🌤️ Clima Actual</h2>
-    <input type="text" id="ciudad" placeholder="Escribí una ciudad (ej: Asuncion)">
+    <input
+      type="text"
+      id="ciudad"
+      placeholder="Escribí una ciudad (ej: Asuncion, Madrid, Tokyo)"
+    />
     <button id="btnClima">Obtener Clima</button>
     <p id="resultadoClima"></p>
 
-    <hr>
+    <hr />
 
     <button class="btn-rojo" onclick="window.location.href='principal.html'">Volver</button>
   </div>
 
   <script>
     // ====== EMAILJS CONFIGURACIÓN ======
-    (function() {
+    (function () {
       emailjs.init("x-X8iA20AVMQneCAA"); // tu Public Key
     })();
 
@@ -173,7 +184,8 @@
         })
         .catch((err) => {
           console.error("Error EmailJS:", err);
-          resultado.textContent = "❌ Error al enviar el mensaje. Intentalo más tarde.";
+          resultado.textContent =
+            "❌ Error al enviar el mensaje. Intentalo más tarde.";
           resultado.style.color = "red";
         });
     });
@@ -181,16 +193,18 @@
     // ====== API IMAGEN ALEATORIA ======
     document.getElementById("btnImagen").addEventListener("click", () => {
       const img = document.getElementById("imagenAleatoria");
-      img.src = `https://picsum.photos/600/300?random=${Math.floor(Math.random() * 1000)}`;
+      img.src = `https://picsum.photos/600/300?random=${Math.floor(
+        Math.random() * 1000
+      )}`;
     });
 
-    // ====== API CLIMA (Open-Meteo, sin key) ======
-    document.getElementById("btnClima").addEventListener("click", () => {
+    // ====== API CLIMA GLOBAL (Nominatim + Open-Meteo) ======
+    document.getElementById("btnClima").addEventListener("click", async () => {
       const ciudad = document.getElementById("ciudad").value.trim();
       const resultado = document.getElementById("resultadoClima");
 
       if (!ciudad) {
-        resultado.textContent = "⚠️ Ingresá una ciudad (ej: Asuncion)";
+        resultado.textContent = "⚠️ Ingresá una ciudad (ej: Asuncion, Madrid, Tokyo)";
         resultado.style.color = "red";
         return;
       }
@@ -198,44 +212,50 @@
       resultado.textContent = "⏳ Buscando clima...";
       resultado.style.color = "#333";
 
-      // Coordenadas básicas para ciudades paraguayas
-      const coords = {
-        asuncion: { lat: -25.3, lon: -57.64 },
-        encarnacion: { lat: -27.33, lon: -55.87 },
-        ciudad_del_este: { lat: -25.51, lon: -54.61 },
-        concepcion: { lat: -23.41, lon: -57.43 }
-      };
+      try {
+        // Paso 1: Buscar coordenadas con Nominatim
+        const geoUrl = `https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(
+          ciudad
+        )}&format=json&limit=1`;
+        const geoRes = await fetch(geoUrl);
+        const geoData = await geoRes.json();
 
-      const key = ciudad.toLowerCase().replaceAll(" ", "_");
-      const ubicacion = coords[key];
+        if (!geoData || geoData.length === 0) {
+          throw new Error("Ciudad no encontrada");
+        }
 
-      if (!ubicacion) {
-        resultado.textContent = "❌ Ciudad no registrada. Probá Asuncion, Encarnacion, Ciudad del Este o Concepcion.";
+        const lat = geoData[0].lat;
+        const lon = geoData[0].lon;
+
+        // Paso 2: Consultar clima con Open-Meteo
+        const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+        const weatherRes = await fetch(weatherUrl);
+        const weatherData = await weatherRes.json();
+
+        if (!weatherData.current_weather) {
+          throw new Error("No se pudo obtener el clima.");
+        }
+
+        const temp = weatherData.current_weather.temperature.toFixed(1);
+        const viento = weatherData.current_weather.windspeed;
+        const hora = new Date(weatherData.current_weather.time).toLocaleTimeString(
+          "es-ES",
+          { hour: "2-digit", minute: "2-digit" }
+        );
+
+        resultado.innerHTML = `
+          🌍 <b>${ciudad.charAt(0).toUpperCase() + ciudad.slice(1)}</b><br>
+          🌡️ <b>${temp} °C</b> — viento ${viento} km/h<br>
+          🕒 Actualizado a las ${hora}
+        `;
+        resultado.style.color = "#0072ff";
+      } catch (err) {
+        console.error("Error clima global:", err);
+        resultado.textContent =
+          "❌ No se pudo obtener el clima. Verificá el nombre o la conexión.";
         resultado.style.color = "red";
-        return;
       }
-
-      const url = `https://api.open-meteo.com/v1/forecast?latitude=${ubicacion.lat}&longitude=${ubicacion.lon}&current_weather=true`;
-
-      fetch(url)
-        .then(res => res.json())
-        .then(data => {
-          const temp = data.current_weather.temperature.toFixed(1);
-          const viento = data.current_weather.windspeed;
-          const hora = new Date(data.current_weather.time).toLocaleTimeString("es-PY", { hour: '2-digit', minute: '2-digit' });
-
-          resultado.innerHTML = `
-            🌡️ <b>${temp} °C</b> — viento ${viento} km/h<br>
-            🕒 Actualizado a las ${hora}
-          `;
-          resultado.style.color = "#0072ff";
-        })
-        .catch(() => {
-          resultado.textContent = "❌ No se pudo obtener el clima en este momento.";
-          resultado.style.color = "red";
-        });
     });
   </script>
 </body>
 </html>
-
