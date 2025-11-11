@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Página de APIs</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Centro de APIs - UNG</title>
 
   <style>
     body {
@@ -11,7 +11,6 @@
       background: url('fondo.avif') no-repeat center center fixed;
       background-size: cover;
       margin: 0;
-      padding: 0;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -19,11 +18,11 @@
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: 20px;
-      padding: 30px;
-      width: 700px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 22px;
+      padding: 35px;
+      width: 720px;
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25);
       text-align: center;
     }
 
@@ -33,14 +32,15 @@
     }
 
     h2 {
-      margin-top: 25px;
       color: #004aad;
+      margin-top: 30px;
+      margin-bottom: 15px;
     }
 
     input, textarea {
       width: 90%;
       margin: 8px auto;
-      padding: 10px;
+      padding: 12px;
       border: 1px solid #ccc;
       border-radius: 10px;
       display: block;
@@ -101,44 +101,43 @@
   </style>
 </head>
 <body>
-
   <div class="card">
-    <h1>🌐 Centro de APIs</h1>
+    <h1>🌐 Interacción con APIs</h1>
 
     <!-- 🌤 CLIMA -->
     <section>
-      <h2>API del Clima</h2>
+      <h2>🌤 API del Clima</h2>
       <input type="text" id="ciudad" placeholder="Escribí una ciudad (ej: Asunción)">
-      <button class="btn-primario" onclick="obtenerClima()">Ver clima</button>
+      <button class="btn-primario" onclick="obtenerClima()">Ver Clima</button>
       <div id="climaResultado"></div>
     </section>
 
-    <!-- 🖼️ IMÁGENES -->
+    <!-- 🖼 IMÁGENES -->
     <section>
-      <h2>API de Imágenes Aleatorias</h2>
-      <button class="btn-primario" onclick="mostrarImagen()">Ver imagen</button>
+      <h2>🖼 Imagen Aleatoria</h2>
+      <button class="btn-primario" onclick="mostrarImagen()">Mostrar Imagen</button>
       <div id="contenedorImagen"></div>
     </section>
 
     <!-- 📧 CORREO -->
     <section>
-      <h2>API de Envío de Correo</h2>
+      <h2>📧 Envío de Correo</h2>
       <input type="text" id="nombreCorreo" placeholder="Tu nombre">
       <input type="email" id="emailCorreo" placeholder="Tu correo electrónico">
-      <textarea id="mensajeCorreo" rows="3" placeholder="Escribí un mensaje..."></textarea>
-      <button class="btn-primario" onclick="enviarCorreo()">Enviar correo</button>
+      <textarea id="mensajeCorreo" rows="3" placeholder="Escribí tu mensaje..."></textarea>
+      <button class="btn-primario" onclick="enviarCorreo()">Enviar</button>
       <p id="estadoCorreo" class="mensaje"></p>
     </section>
 
     <button class="btn-primario rojo" onclick="window.location.href='principal.html'">Volver</button>
   </div>
 
-  <!-- 📦 Scripts -->
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>
-    emailjs.init("x-X8iA20AVMQneCAA"); // tu Public Key
+    emailjs.init("x-X8iA20AVMQneCAA"); // 🔑 Tu Public Key
 
-    // 🌤 API DEL CLIMA (Open-Meteo con geocodificación)
+    // 🌤 API DEL CLIMA (Open-Meteo)
     async function obtenerClima() {
       const ciudad = document.getElementById("ciudad").value.trim();
       const resultado = document.getElementById("climaResultado");
@@ -149,7 +148,6 @@
       }
       resultado.textContent = "⏳ Buscando...";
       try {
-        // Primero obtenemos latitud y longitud según el nombre
         const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(ciudad)}&count=1&language=es&format=json`);
         const geoData = await geoRes.json();
 
@@ -160,8 +158,6 @@
         }
 
         const { latitude, longitude, name, country } = geoData.results[0];
-
-        // Luego obtenemos el clima
         const climaRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`);
         const climaData = await climaRes.json();
 
@@ -178,7 +174,7 @@
       }
     }
 
-    // 🖼️ API DE IMÁGENES (Picsum)
+    // 🖼 API DE IMÁGENES (Picsum)
     async function mostrarImagen() {
       const contenedor = document.getElementById("contenedorImagen");
       contenedor.innerHTML = "⏳ Cargando imagen...";
@@ -207,25 +203,33 @@
         return;
       }
 
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        estado.textContent = "⚠️ Ingresá un correo electrónico válido.";
+        estado.style.color = "red";
+        return;
+      }
+
       const params = {
         user: nombre,
         email: email,
-        message: mensaje
+        message: mensaje,
+        reply_to: email
       };
 
       estado.textContent = "⏳ Enviando...";
       estado.style.color = "#333";
 
       emailjs.send("service_gcpdw9g", "template_3aikrip", params)
-      .then(() => {
-        estado.textContent = "✅ Correo enviado correctamente.";
-        estado.style.color = "green";
-      })
-      .catch((error) => {
-        console.error(error);
-        estado.textContent = "❌ Error al enviar el correo.";
-        estado.style.color = "red";
-      });
+        .then(() => {
+          estado.textContent = "✅ Correo enviado correctamente.";
+          estado.style.color = "green";
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          estado.textContent = "❌ Error al enviar el correo. Revisá tu conexión o configuración.";
+          estado.style.color = "red";
+        });
     }
   </script>
 </body>
