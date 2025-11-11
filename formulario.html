@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Formulario de Contacto</title>
+  <title>Formulario de Evaluación</title>
   <link rel="stylesheet" href="css/estilos.css" />
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
@@ -88,11 +88,23 @@
       font-weight: 600;
       display: none;
     }
+
+    a {
+      display: inline-block;
+      margin-top: 10px;
+      color: #0072ff;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
   <div class="card">
-    <h1 class="titulo">Formulario de Contacto</h1>
+    <h1 class="titulo">📋 Formulario de Evaluación</h1>
 
     <input id="user_name" type="text" placeholder="Nombre y Apellido" required />
     <input
@@ -104,20 +116,22 @@
       oninput="validarCalificacion(this)"
       onkeydown="bloquearTeclas(event)"
       onpaste="event.preventDefault()"
+      required
     />
     <textarea id="message" rows="4" placeholder="Escribe tu mensaje aquí..." required></textarea>
 
     <button class="btn-primario" id="btnEnviar">Enviar</button>
     <button class="btn-rojo" id="btnLimpiar">Limpiar</button>
-    <button class="btn-primario" onclick="window.location.href='principal.html'">Volver</button>
 
     <p class="mensaje" id="alerta">⚠️ Solo se permiten números del 1 al 10.</p>
     <p class="mensaje" id="estado"></p>
+
+    <a href="principal.html">⬅ Volver al menú principal</a>
   </div>
 
   <script>
-    // Inicializar EmailJS
-    emailjs.init("x-X8iA20AVMQneCAA"); // 👈 tu Public Key
+    // Inicializa EmailJS
+    emailjs.init("x-X8iA20AVMQneCAA"); // 🔑 Tu PUBLIC KEY
 
     function validarCalificacion(input) {
       input.value = input.value.replace(/[^0-9]/g, "");
@@ -152,17 +166,15 @@
         return;
       }
 
-      estado.style.display = "none";
-
       const templateParams = {
         user: nombre,
-        email: "no-email@example.com", // campo dummy (no usado en este template)
-        message: `Calificación: ${calificacion}\nMensaje: ${mensaje}`,
+        email: "no-email@example.com", // no se usa
+        message: `Calificación: ${calificacion}\nMensaje: ${mensaje}`
       };
 
-      emailjs.send("service_gcpdw9g", "template_47h8ew5", templateParams)
+      emailjs.send("service_gcpdw9g", "template_tynh8q2", templateParams)
         .then(() => {
-          estado.textContent = "✅ Mensaje enviado correctamente.";
+          estado.textContent = "✅ Formulario enviado correctamente.";
           estado.style.color = "green";
           estado.style.display = "block";
           document.getElementById("user_name").value = "";
@@ -170,7 +182,7 @@
           document.getElementById("message").value = "";
         })
         .catch(() => {
-          estado.textContent = "❌ Error al enviar el mensaje. Intentalo más tarde.";
+          estado.textContent = "❌ Error al enviar el formulario. Intentalo más tarde.";
           estado.style.color = "red";
           estado.style.display = "block";
         });
