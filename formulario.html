@@ -1,157 +1,148 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Formulario de Evaluación</title>
-  <link rel="stylesheet" href="css/estilos.css">
+  <link rel="stylesheet" href="css/estilos.css"/>
   <style>
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    /* Layout centrado y consistente */
+    body{
+      margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
       background:
         linear-gradient(135deg, rgba(0,114,255,0.55), rgba(0,198,255,0.55)),
         url("fondo.avif") center center / cover no-repeat fixed;
-      font-family: "Poppins", system-ui, sans-serif;
-      color: #1f2937;
+      font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,sans-serif;color:#1f2937;
+      padding:20px;
     }
-
-    .contenedor {
-      background: rgba(255, 255, 255, 0.93);
-      border-radius: 20px;
-      padding: 35px 40px;
-      width: 100%;
-      max-width: 600px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-      text-align: center;
-      backdrop-filter: blur(8px);
+    .contenedor{
+      background:rgba(255,255,255,.93);backdrop-filter:blur(8px);
+      border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,.25);
+      width:100%;max-width:560px;padding:36px 42px;text-align:center;
     }
-
-    h1 {
-      color: #0072ff;
-      margin-bottom: 20px;
+    h1{margin:0 0 22px;color:#0072ff;font-size:1.9rem;font-weight:700}
+    .fila{display:flex;gap:12px}
+    .fila > *{flex:1}
+    input,textarea{
+      width:100%;padding:12px 16px;margin-bottom:14px;border-radius:12px;border:1px solid #ccc;
+      font-size:16px;outline:none;transition:border-color .2s, box-shadow .2s;text-align:center
     }
-
-    input, textarea {
-      width: 100%;
-      padding: 12px 16px;
-      margin-bottom: 15px;
-      border-radius: 12px;
-      border: 1px solid #ccc;
-      font-size: 15px;
-      outline: none;
-      transition: border 0.2s ease;
-    }
-
-    input:focus, textarea:focus {
-      border-color: #0072ff;
-      box-shadow: 0 0 4px rgba(0,114,255,0.4);
-    }
-
-    textarea {
-      resize: none;
-      min-height: 100px;
-    }
-
-    .btn {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      color: white;
-      cursor: pointer;
-      transition: background 0.25s ease;
-    }
-
-    .btn.azul { background: #0072ff; }
-    .btn.azul:hover { background: #00c6ff; }
-    .btn.limpiar { background: #e63946; margin-top: 8px; }
-    .btn.limpiar:hover { background: #ff5f5f; }
-    .btn.volver { background: #0072ff; margin-top: 20px; }
-
-    .mensaje {
-      margin-top: 10px;
-      font-weight: 600;
-      text-align: center;
-    }
-
-    .mensaje.ok { color: #18a558; }
-    .mensaje.error { color: #e63946; }
+    input:focus,textarea:focus{border-color:#0072ff;box-shadow:0 0 6px rgba(0,114,255,.25)}
+    textarea{resize:none;min-height:110px;text-align:left}
+    .btn{width:100%;padding:12px;border:none;border-radius:12px;font-size:16px;font-weight:600;color:#fff;cursor:pointer;transition:background .25s}
+    .btn.azul{background:#0072ff}.btn.azul:hover{background:#00c6ff}
+    .btn.rojo{background:#e63946}.btn.rojo:hover{background:#ff5f5f}
+    .btn.volver{background:#0072ff;margin-top:8px}
+    .estado{margin-top:10px;font-weight:700}
+    .estado.ok{color:#18a558}.estado.err{color:#e63946}
   </style>
 </head>
 <body>
   <div class="contenedor">
     <h1>📋 Formulario de Evaluación</h1>
 
-    <input type="text" id="nombre" placeholder="Nombre y Apellido" required>
+    <!-- Nombre -->
+    <input id="nombre" type="text" placeholder="Nombre y Apellido" autocomplete="name" required />
 
-    <input type="text" id="calificacion" placeholder="Calificación (1 - 10)" 
-      maxlength="2" 
+    <!-- Calificación: SOLO 1–10, 2 dígitos máx -->
+    <input
+      id="calificacion"
+      type="text"
+      placeholder="Calificación (1 a 10)"
       inputmode="numeric"
-      pattern="[0-9]*"
-      oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 2);">
+      maxlength="2"
+      autocomplete="off"
+    />
 
+    <!-- Mensaje -->
     <textarea id="mensaje" placeholder="Escribí tu comentario o mensaje..." required></textarea>
 
-    <button class="btn azul" onclick="enviarFormulario()">Enviar</button>
-    <button class="btn limpiar" onclick="limpiarCampos()">Limpiar</button>
+    <button class="btn azul" id="btnEnviar">Enviar</button>
+    <button class="btn rojo" id="btnLimpiar" type="button">Limpiar</button>
+    <button class="btn volver" type="button" onclick="location.href='principal.html'">Volver</button>
 
-    <p id="estado" class="mensaje"></p>
-
-    <button class="btn volver" onclick="window.location.href='principal.html'">Volver</button>
+    <p id="estado" class="estado"></p>
   </div>
 
   <!-- EmailJS -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>
-    emailjs.init("x-X8iA20AVMQneCAA"); // Tu public key
+    // Init EmailJS
+    emailjs.init("x-X8iA20AVMQneCAA"); // Public Key
 
-    function enviarFormulario() {
-      const nombre = document.getElementById("nombre").value.trim();
-      const calificacion = document.getElementById("calificacion").value.trim();
-      const mensaje = document.getElementById("mensaje").value.trim();
-      const estado = document.getElementById("estado");
+    // ----- Calificación: bloqueo TOTAL -----
+    const calif = document.getElementById('calificacion');
 
-      if (!nombre || !calificacion || !mensaje) {
-        estado.textContent = "⚠️ Completá todos los campos antes de enviar.";
-        estado.className = "mensaje error";
-        return;
+    // Sanitiza siempre que cambie (escritura/pegado/autofill)
+    calif.addEventListener('input', (e) => {
+      let v = e.target.value.replace(/[^0-9]/g, '').slice(0, 2); // solo dígitos, máx 2
+      // normaliza rango 1-10
+      if (v.length) {
+        const n = parseInt(v, 10);
+        if (n === 0) v = '';        // no 0
+        else if (n > 10) v = '10';  // tope
+        else v = String(n);         // quita ceros a la izquierda
+      }
+      e.target.value = v;
+    });
+
+    // Bloqueo de teclas no numéricas y más de 2 dígitos
+    calif.addEventListener('keydown', (e) => {
+      const ok = ['Backspace','Delete','Tab','ArrowLeft','ArrowRight','Home','End','Enter'];
+      if (ok.includes(e.key)) return;
+      if (!/^\d$/.test(e.key) || calif.value.length >= 2) e.preventDefault();
+    });
+
+    // Bloquear pegado directo (igual sanitizamos en input por seguridad)
+    calif.addEventListener('paste', (e) => {
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData('text') || '';
+      const nums = text.replace(/[^0-9]/g, '').slice(0,2);
+      if (nums) calif.value = String(Math.min(parseInt(nums,10),10));
+    });
+
+    // ----- Envío -----
+    const estado = document.getElementById('estado');
+    const nombre = document.getElementById('nombre');
+    const mensaje = document.getElementById('mensaje');
+
+    document.getElementById('btnEnviar').addEventListener('click', () => {
+      const nom = nombre.value.trim();
+      const cal = calif.value.trim();
+      const msg = mensaje.value.trim();
+
+      if (!nom || !cal || !msg) {
+        setEstado('⚠️ Completá todos los campos.', true); return;
       }
 
-      const califNum = parseInt(calificacion);
-      if (isNaN(califNum) || califNum < 0 || califNum > 99) {
-        estado.textContent = "⚠️ La calificación debe ser un número entre 0 y 99.";
-        estado.className = "mensaje error";
-        return;
+      const n = parseInt(cal, 10);
+      if (isNaN(n) || n < 1 || n > 10) {
+        setEstado('⚠️ La calificación debe ser un número entre 1 y 10.', true); return;
       }
 
-      const params = {
-        user: nombre,
-        calificacion: calificacion,
-        message: mensaje
-      };
+      setEstado('Enviando...', false);
+
+      const params = { user: nom, calificacion: String(n), message: msg };
 
       emailjs.send("service_4i6e4ii", "template_tynh8q2", params)
         .then(() => {
-          estado.textContent = "✅ Formulario enviado correctamente.";
-          estado.className = "mensaje ok";
-          limpiarCampos();
+          setEstado('✅ Formulario enviado correctamente.', false);
+          limpiar();
         })
-        .catch(() => {
-          estado.textContent = "❌ Error al enviar el formulario. Intentalo más tarde.";
-          estado.className = "mensaje error";
-        });
-    }
+        .catch(() => setEstado('❌ Error al enviar. Intentalo más tarde.', true));
+    });
 
-    function limpiarCampos() {
-      document.getElementById("nombre").value = "";
-      document.getElementById("calificacion").value = "";
-      document.getElementById("mensaje").value = "";
-      document.getElementById("estado").textContent = "";
+    document.getElementById('btnLimpiar').addEventListener('click', limpiar);
+
+    function limpiar(){
+      nombre.value = '';
+      calif.value = '';
+      mensaje.value = '';
+      setEstado('', false);
+    }
+    function setEstado(text, error){
+      estado.textContent = text || '';
+      estado.className = 'estado' + (text ? (error ? ' err' : ' ok') : '');
     }
   </script>
 </body>
