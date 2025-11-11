@@ -104,14 +104,15 @@
     <input type="text" id="nombre" placeholder="Nombre y Apellido" />
     <input type="email" id="email" placeholder="Correo electrónico" />
 
-    <!-- Calificación: solo números, máximo 2 -->
-    <input 
-      id="calificacion" 
-      type="text" 
-      placeholder="Calificación (00)" 
-      inputmode="numeric" 
-      maxlength="2"
-    />
+    <!-- Calificación: solo números del 1 al 10 -->
+<input 
+  id="calificacion"
+  type="text"
+  placeholder="Calificación (1 a 10)"
+  inputmode="numeric"
+  maxlength="2"
+/>
+
 
     <textarea id="mensaje" rows="4" placeholder="Escribí tu mensaje..."></textarea>
 
@@ -192,5 +193,27 @@
       document.getElementById("resultado").textContent = "";
     }
   </script>
+  <script>
+  const inputCalificacion = document.getElementById('calificacion');
+
+  // Bloquear texto y limitar a dos dígitos
+  inputCalificacion.addEventListener('input', (e) => {
+    let valor = e.target.value.replace(/[^0-9]/g, '').slice(0, 2);
+    let numero = parseInt(valor, 10);
+
+    // Si supera 10, lo corrige automáticamente
+    if (numero > 10) valor = '10';
+    e.target.value = valor;
+  });
+
+  inputCalificacion.addEventListener('keydown', (e) => {
+    const permitido = ['Backspace','Delete','Tab','ArrowLeft','ArrowRight'];
+    if (permitido.includes(e.key)) return;
+    if (!/[0-9]/.test(e.key) || inputCalificacion.value.length >= 2) e.preventDefault();
+  });
+
+  inputCalificacion.addEventListener('paste', (e) => e.preventDefault());
+</script>
+
 </body>
 </html>
