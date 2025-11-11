@@ -1,33 +1,31 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Formulario de Contacto</title>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <link rel="stylesheet" href="css/estilos.css">
   <style>
     body {
       margin: 0;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
-      justify-content: center;
       align-items: center;
-      background: linear-gradient(135deg, rgba(0,114,255,0.55), rgba(0,198,255,0.55)),
-                  url("fondo.avif") center center / cover no-repeat fixed;
-      font-family: "Poppins", sans-serif;
+      justify-content: center;
+      background:
+        linear-gradient(135deg, rgba(0,114,255,0.55), rgba(0,198,255,0.55)),
+        url("fondo.avif") center center / cover no-repeat fixed;
+      font-family: "Poppins", system-ui, sans-serif;
+      color: #1f2937;
     }
 
     .card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
       background: rgba(255, 255, 255, 0.93);
-      border-radius: 22px;
+      border-radius: 20px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-      padding: 40px 50px;
+      padding: 40px 45px;
       width: 100%;
-      max-width: 480px;
+      max-width: 520px;
       text-align: center;
       backdrop-filter: blur(8px);
     }
@@ -41,170 +39,132 @@
 
     input, textarea {
       width: 100%;
-      border: 2px solid transparent;
-      border-radius: 14px;
-      background: #f8fafc;
-      padding: 14px 16px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
       font-size: 16px;
-      margin-bottom: 16px;
       outline: none;
-      transition: border-color 0.2s ease;
-      text-align: center;
+      transition: border 0.2s ease;
     }
 
     input:focus, textarea:focus {
       border-color: #0072ff;
-      background: #fff;
-      box-shadow: 0 0 6px rgba(0,114,255,0.3);
+      box-shadow: 0 0 4px rgba(0,114,255,0.4);
     }
 
-    button {
+    textarea {
+      resize: none;
+      min-height: 100px;
+    }
+
+    .btn {
       width: 100%;
-      border: none;
-      border-radius: 14px;
       padding: 12px;
+      border: none;
+      border-radius: 12px;
       font-size: 16px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-      margin-top: 8px;
-      font-weight: 600;
-    }
-
-    .btn-primario {
-      background: #0072ff;
       color: white;
+      cursor: pointer;
+      margin-bottom: 10px;
+      transition: background 0.25s ease;
     }
 
-    .btn-primario:hover {
+    .btn.enviar {
+      background: #0072ff;
+    }
+
+    .btn.limpiar {
+      background: #e63946;
+    }
+
+    .btn.volver {
+      background: #0072ff;
+      margin-top: 10px;
+    }
+
+    .btn.enviar:hover {
       background: #00c6ff;
     }
 
-    .btn-rojo {
-      background: #e63946;
-      color: white;
-    }
-
-    .btn-rojo:hover {
+    .btn.limpiar:hover {
       background: #ff5f5f;
     }
 
+    .btn.volver:hover {
+      background: #00c6ff;
+    }
+
     .mensaje {
-      font-weight: 600;
       margin-top: 12px;
-      display: none;
+      font-weight: 600;
     }
 
-    #estado {
-      color: green;
-    }
-
-    #alerta {
+    .mensaje.error {
       color: #e63946;
     }
 
-    a {
-      display: block;
-      margin-top: 15px;
-      color: #0072ff;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    a:hover {
-      text-decoration: underline;
+    .mensaje.ok {
+      color: #18a558;
     }
   </style>
 </head>
 <body>
   <div class="card">
-    <h1 class="titulo">📋 Formulario de Calificion</h1>
+    <h1 class="titulo">📝 Formulario de Calificacion
+    <form id="formulario">
+      <input type="text" id="nombre" placeholder="Nombre y Apellido" required>
+      <input type="number" id="calificacion" placeholder="Calificación (1 a 10)" min="1" max="10" step="1" required>
+      <textarea id="mensaje" placeholder="Escribe tu mensaje aquí..." required></textarea>
 
-    <input id="user_name" type="text" placeholder="Nombre y Apellido" required />
-    <input
-      id="user_rating"
-      type="number"
-      placeholder="Calificación (1 a 10)"
-      min="1"
-      max="10"
-      oninput="validarCalificacion(this)"
-      onkeydown="bloquearTeclas(event)"
-      onpaste="event.preventDefault()"
-      required
-    />
-    <textarea id="message" rows="4" placeholder="Escribe tu mensaje aquí..." required></textarea>
+      <button type="submit" class="btn enviar">Enviar</button>
+      <button type="reset" class="btn limpiar">Limpiar</button>
+      <button type="button" class="btn volver" onclick="window.location.href='principal.html'">Volver</button>
+    </form>
 
-    <button class="btn-primario" id="btnEnviar">Enviar</button>
-    <button class="btn-rojo" id="btnLimpiar">Limpiar</button>
-    <button class="btn-primario" onclick="window.location.href='principal.html'">Volver</button>
-
-    <p class="mensaje" id="alerta">⚠️ Solo se permiten números del 1 al 10.</p>
-    <p class="mensaje" id="estado"></p>
-
+    <p id="estado" class="mensaje"></p>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>
-    // Inicializa EmailJS
-    emailjs.init("x-X8iA20AVMQneCAA"); // Tu PUBLIC KEY
+    emailjs.init("x-X8iA20AVMQneCAA"); // tu Public Key
 
-    function validarCalificacion(input) {
-      input.value = input.value.replace(/[^0-9]/g, "");
-      if (input.value.length > 2) input.value = input.value.slice(0, 2);
-      const valor = parseInt(input.value, 10);
-      const alerta = document.getElementById("alerta");
+    document.getElementById("formulario").addEventListener("submit", function (event) {
+      event.preventDefault();
 
-      if (valor > 10 || valor < 1 || isNaN(valor)) {
-        alerta.style.display = "block";
-      } else {
-        alerta.style.display = "none";
-      }
-    }
-
-    function bloquearTeclas(e) {
-      const permitido = ["Backspace", "Delete", "Tab", "ArrowLeft", "ArrowRight"];
-      if (permitido.includes(e.key)) return;
-      if (!/[0-9]/.test(e.key)) e.preventDefault();
-    }
-
-    document.getElementById("btnEnviar").addEventListener("click", () => {
-      const nombre = document.getElementById("user_name").value.trim();
-      const calificacion = document.getElementById("user_rating").value.trim();
-      const mensaje = document.getElementById("message").value.trim();
+      const nombre = document.getElementById("nombre").value.trim();
+      const calificacion = document.getElementById("calificacion").value.trim();
+      const mensaje = document.getElementById("mensaje").value.trim();
       const estado = document.getElementById("estado");
 
       if (!nombre || !calificacion || !mensaje) {
         estado.textContent = "⚠️ Todos los campos son obligatorios.";
-        estado.style.color = "red";
-        estado.style.display = "block";
+        estado.className = "mensaje error";
         return;
       }
 
-      const templateParams = {
+      if (isNaN(calificacion) || calificacion < 1 || calificacion > 10) {
+        estado.textContent = "⚠️ La calificación debe ser un número entre 1 y 10.";
+        estado.className = "mensaje error";
+        return;
+      }
+
+      const params = {
         user: nombre,
-        message: `Calificación: ${calificacion}\nMensaje: ${mensaje}`
+        calificacion: calificacion,
+        message: mensaje,
       };
 
-      emailjs.send("service_gcpdw9g", "template_tynh8q2", templateParams)
+      emailjs.send("service_4i6e4ii", "template_47h8ew5", params)
         .then(() => {
           estado.textContent = "✅ Mensaje enviado correctamente.";
-          estado.style.color = "green";
-          estado.style.display = "block";
-          document.getElementById("user_name").value = "";
-          document.getElementById("user_rating").value = "";
-          document.getElementById("message").value = "";
+          estado.className = "mensaje ok";
+          document.getElementById("formulario").reset();
         })
         .catch(() => {
           estado.textContent = "❌ Error al enviar el formulario. Intentalo más tarde.";
-          estado.style.color = "red";
-          estado.style.display = "block";
+          estado.className = "mensaje error";
         });
-    });
-
-    document.getElementById("btnLimpiar").addEventListener("click", () => {
-      document.getElementById("user_name").value = "";
-      document.getElementById("user_rating").value = "";
-      document.getElementById("message").value = "";
-      document.getElementById("estado").style.display = "none";
-      document.getElementById("alerta").style.display = "none";
     });
   </script>
 </body>
