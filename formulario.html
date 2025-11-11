@@ -1,65 +1,175 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Formulario de Contacto</title>
-  <link rel="stylesheet" href="css/estilos.css">
-</head>
-<body class="bg-gradiente">
-  <div class="card">
-    <h1 class="titulo">Formulario de Contacto</h1>
-
-    <form id="contactForm" class="form">
-      <input type="text" id="nombre" placeholder="Nombre y Apellido" required>
-      <input type="text" id="calificacion" placeholder="Calificación (1 a 10)" required>
-      <textarea id="mensaje" placeholder="Escribe tu mensaje aquí..." rows="5" required></textarea>
-
-      <button type="submit" class="btn-primario">Enviar</button>
-      <button type="reset" class="btn-primario" style="background:#e63946;">Limpiar</button>
-    </form>
-
-    <p id="estadoEnvio" class="mensaje"></p>
-    <button class="btn-primario" onclick="volver()">Volver</button>
-  </div>
-
-  <!-- EmailJS -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Formulario de Evaluación</title>
+  <link rel="stylesheet" href="css/estilos.css" />
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background:
+        linear-gradient(135deg, rgba(0,114,255,0.45), rgba(0,198,255,0.45)),
+        url("fondo.avif") center center / cover no-repeat fixed;
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.92);
+      padding: 35px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      max-width: 600px;
+      width: 100%;
+      backdrop-filter: blur(6px);
+    }
+
+    h1 {
+      text-align: center;
+      color: #0072ff;
+      margin-bottom: 25px;
+      font-size: 1.8rem;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px 15px;
+      margin-bottom: 12px;
+      border-radius: 10px;
+      border: 2px solid #e5e7eb;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.25s;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #0072ff;
+      box-shadow: 0 0 6px rgba(0,114,255,0.2);
+    }
+
+    button {
+      background: #0072ff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.25s ease;
+      width: 100%;
+    }
+
+    button:hover { background: #00c6ff; }
+
+    .btn-rojo {
+      background: #e63946;
+      margin-top: 10px;
+    }
+
+    .btn-rojo:hover { background: #ff5f5f; }
+
+    #resultado {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 15px;
+      font-size: 1rem;
+    }
+
+    .volver {
+      display: block;
+      margin-top: 20px;
+      text-align: center;
+      text-decoration: none;
+      color: #0072ff;
+      font-weight: bold;
+    }
+
+    .volver:hover {
+      color: #00c6ff;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h1>📋 Formulario de Evaluación</h1>
+
+    <input type="text" id="nombre" placeholder="Nombre y Apellido" />
+    <input type="email" id="email" placeholder="Correo electrónico" />
+
+    <!-- Campo de calificación: solo números y máximo 2 dígitos -->
+    <input 
+      type="number"
+      id="calificacion"
+      placeholder="Calificación (00)"
+      min="0"
+      max="99"
+      oninput="this.value = this.value.replace(/[^0-9]/g,'').slice(0,2);" 
+    />
+
+    <textarea id="mensaje" rows="4" placeholder="Escribí tu mensaje..."></textarea>
+
+    <button id="btnEnviar">Enviar</button>
+    <button class="btn-rojo" type="button" onclick="limpiar()">Limpiar</button>
+
+    <p id="resultado"></p>
+
+    <a class="volver" href="principal.html">⬅ Volver al menú principal</a>
+  </div>
+
   <script>
-    // Inicializamos EmailJS con tu clave pública
+    // Inicialización de EmailJS
     (function() {
-      emailjs.init('x-X8iA20AVMQneCAA'); // Tu Public Key
+      emailjs.init("x-X8iA20AVMQneCAA"); // Tu Public Key
     })();
 
-    const form = document.getElementById('contactForm');
-    const estado = document.getElementById('estadoEnvio');
+    document.getElementById("btnEnviar").addEventListener("click", () => {
+      const nombre = document.getElementById("nombre").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const calificacion = document.getElementById("calificacion").value.trim();
+      const mensaje = document.getElementById("mensaje").value.trim();
+      const resultado = document.getElementById("resultado");
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const nombre = document.getElementById('nombre').value.trim();
-      const calificacion = document.getElementById('calificacion').value.trim();
-      const mensaje = document.getElementById('mensaje').value.trim();
-
-      estado.textContent = 'Enviando mensaje...';
-
-      try {
-        await emailjs.send('service_gcpdw9g', 'template_47h8ew5', {
-          user: nombre,
-          message: `Mensaje: ${mensaje} | Calificación: ${calificacion}`
-        });
-        estado.textContent = '📩 Mensaje enviado correctamente!';
-        estado.style.color = '#18a558';
-      } catch (err) {
-        estado.textContent = '⚠️ Error al enviar el mensaje.';
-        estado.style.color = '#e63946';
-        console.error(err);
+      if (!nombre || !email || !calificacion || !mensaje) {
+        resultado.textContent = "⚠️ Completá todos los campos antes de enviar.";
+        resultado.style.color = "red";
+        return;
       }
+
+      resultado.textContent = "⏳ Enviando formulario...";
+      resultado.style.color = "#333";
+
+      emailjs
+        .send("service_gcpdw9g", "template_tynh8q2", {
+          nombre: nombre,
+          email: email,
+          calificacion: calificacion,
+          mensaje: mensaje,
+        })
+        .then(() => {
+          resultado.textContent = "✅ Formulario enviado correctamente. ¡Gracias!";
+          resultado.style.color = "green";
+        })
+        .catch((err) => {
+          console.error("Error EmailJS:", err);
+          resultado.textContent = "❌ Error al enviar el formulario. Intentalo más tarde.";
+          resultado.style.color = "red";
+        });
     });
 
-    function volver() {
-      window.location.href = 'principal.html';
+    function limpiar() {
+      document.getElementById("nombre").value = "";
+      document.getElementById("email").value = "";
+      document.getElementById("calificacion").value = "";
+      document.getElementById("mensaje").value = "";
+      document.getElementById("resultado").textContent = "";
     }
   </script>
 </body>
