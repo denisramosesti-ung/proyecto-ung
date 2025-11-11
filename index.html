@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Proyecto</title>
+  <link rel="stylesheet" href="css/estilos.css" />
+</head>
+<body class="bg-gradiente">
+  <div class="card login">
+    <h1 class="titulo">Iniciar Sesión</h1>
+
+    <form id="loginForm" class="form">
+      <input type="text" id="usuario" placeholder="Usuario" autocomplete="username" required />
+      <input type="password" id="password" placeholder="Contraseña" autocomplete="current-password" required />
+      <button type="submit" class="btn-primario">Ingresar</button>
+    </form>
+
+    <p id="mensaje" class="mensaje"></p>
+    <p class="pista">Usuario: <b>USER</b> · Contraseña: <b>PASS</b></p>
+  </div>
+
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script src="js/login.js"></script>
+</body>
+</html>

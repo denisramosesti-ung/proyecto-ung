@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Operaciones con Productos</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <div class="card">
+    <h1 class="titulo">Operaciones con Productos</h1>
+
+    <div class="form">
+      <input type="text" id="precio" placeholder="Precio" oninput="formatearNumeroInput(this)">
+      <input type="text" id="cantidad" placeholder="Cantidad" oninput="formatearNumeroInput(this)">
+      <button class="btn-primario" onclick="calcular()">Calcular</button>
+      <button class="btn-primario rojo" onclick="limpiar()">Limpiar</button>
+      <button class="btn-primario" onclick="window.location.href='principal.html'">Volver</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Operación</th>
+          <th>Resultado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Total Producto (Precio × Cantidad)</td>
+          <td id="resTotal"></td>
+        </tr>
+        <tr>
+          <td>Porcentaje (30% del Precio)</td>
+          <td id="resPorcentaje"></td>
+        </tr>
+        <tr>
+          <td>Descuento (25% sobre Precio × Cantidad)</td>
+          <td id="resDescuento"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+<script>
+function limpiarFormato(valor) {
+  // Elimina los puntos y convierte coma en punto decimal
+  return valor.replace(/\./g, "").replace(",", ".");
+}
+
+function formatearNumeroInput(input) {
+  // Solo permite números
+  let valor = input.value.replace(/\D/g, "");
+  if (valor === "") {
+    input.value = "";
+    return;
+  }
+
+  // Aplica separador de miles manualmente desde 4 dígitos
+  input.value = valor.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+function obtenerNumero(id) {
+  const valor = document.getElementById(id).value;
+  if (valor.trim() === "") return NaN;
+  return parseFloat(limpiarFormato(valor));
+}
+
+function calcular() {
+  const precio = obtenerNumero("precio");
+  const cantidad = obtenerNumero("cantidad");
+
+  if (isNaN(precio) || isNaN(cantidad)) {
+    alert("Por favor, ingresá números válidos en Precio y Cantidad.");
+    return;
+  }
+
+  const total = precio * cantidad;
+  const porcentaje = precio * 0.30;
+  const descuento = total * 0.75;
+
+  const formato = (num) =>
+    num.toLocaleString("es-ES", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+  document.getElementById("resTotal").textContent = formato(total);
+  document.getElementById("resPorcentaje").textContent = formato(porcentaje);
+  document.getElementById("resDescuento").textContent = formato(descuento);
+}
+
+function limpiar() {
+  document.getElementById("precio").value = "";
+  document.getElementById("cantidad").value = "";
+  document.getElementById("resTotal").textContent = "";
+  document.getElementById("resPorcentaje").textContent = "";
+  document.getElementById("resDescuento").textContent = "";
+}
+</script>
+
+
+  <style>
+  /* Ajuste visual adicional */
+  input[type="text"] {
+    width: 130px;
+    text-align: center;
+    margin: 0 auto 10px auto;
+    display: block;
+    font-size: 16px;
+  }
+
+  table {
+    margin-top: 25px;
+  }
+  </style>
+</body>
+</html>

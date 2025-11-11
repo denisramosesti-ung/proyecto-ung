@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario de Contacto</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body class="bg-gradiente">
+  <div class="card">
+    <h1 class="titulo">Formulario de Contacto</h1>
+
+    <form id="contactForm" class="form">
+      <input type="text" id="nombre" placeholder="Nombre y Apellido" required>
+      <input type="text" id="calificacion" placeholder="Calificación (1 a 10)" required>
+      <textarea id="mensaje" placeholder="Escribe tu mensaje aquí..." rows="5" required></textarea>
+
+      <button type="submit" class="btn-primario">Enviar</button>
+      <button type="reset" class="btn-primario" style="background:#e63946;">Limpiar</button>
+    </form>
+
+    <p id="estadoEnvio" class="mensaje"></p>
+    <button class="btn-primario" onclick="volver()">Volver</button>
+  </div>
+
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+  <script>
+    // Inicializamos EmailJS con tu clave pública
+    (function() {
+      emailjs.init('x-X8iA20AVMQneCAA'); // Tu Public Key
+    })();
+
+    const form = document.getElementById('contactForm');
+    const estado = document.getElementById('estadoEnvio');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const nombre = document.getElementById('nombre').value.trim();
+      const calificacion = document.getElementById('calificacion').value.trim();
+      const mensaje = document.getElementById('mensaje').value.trim();
+
+      estado.textContent = 'Enviando mensaje...';
+
+      try {
+        await emailjs.send('service_gcpdw9g', 'template_47h8ew5', {
+          user: nombre,
+          message: `Mensaje: ${mensaje} | Calificación: ${calificacion}`
+        });
+        estado.textContent = '📩 Mensaje enviado correctamente!';
+        estado.style.color = '#18a558';
+      } catch (err) {
+        estado.textContent = '⚠️ Error al enviar el mensaje.';
+        estado.style.color = '#e63946';
+        console.error(err);
+      }
+    });
+
+    function volver() {
+      window.location.href = 'principal.html';
+    }
+  </script>
+</body>
+</html>

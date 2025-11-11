@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Página API</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body class="bg-gradiente">
+  <div class="card">
+    <h1 class="titulo">Interacción con APIs</h1>
+
+    <div class="form">
+      <button class="btn-primario" onclick="mostrarImagen()">Mostrar Imagen Aleatoria</button>
+      <button class="btn-primario" onclick="simularCorreo()">Simular Envío de Correo</button>
+      <button class="btn-primario" onclick="mostrarFrase()">Mostrar Frase Motivacional</button>
+      <button class="btn-primario" onclick="volver()">Volver</button>
+    </div>
+
+    <div id="contenidoAPI" style="margin-top: 25px;"></div>
+  </div>
+
+  <script>
+    const contenedor = document.getElementById('contenidoAPI');
+
+    function mostrarImagen() {
+      const img = `<img src="https://picsum.photos/400?random=${Math.random()}" 
+                        alt="Imagen aleatoria"
+                        style="border-radius:10px; margin-top:15px;">`;
+      contenedor.innerHTML = img;
+    }
+
+    function simularCorreo() {
+      contenedor.innerHTML = `
+        <p style="color: var(--c-ok); font-weight:bold;">
+          ✉️ Correo enviado exitosamente a user@example.com
+        </p>`;
+    }
+
+    function mostrarFrase() {
+      fetch('https://api.quotable.io/random')
+        .then(res => res.json())
+        .then(data => {
+          contenedor.innerHTML = `
+            <p style="font-style:italic; margin-top:15px;">"${data.content}"</p>
+            <p>— ${data.author}</p>`;
+        })
+        .catch(() => {
+          contenedor.innerHTML = `<p style="color:red;">Error al obtener frase.</p>`;
+        });
+    }
+
+    function volver() {
+      window.location.href = 'principal.html';
+    }
+  </script>
+</body>
+</html>
