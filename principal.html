@@ -5,8 +5,88 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Página Principal</title>
   <link rel="stylesheet" href="css/estilos.css">
-</head>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: 
+        linear-gradient(135deg, rgba(0,114,255,0.55), rgba(0,198,255,0.55)),
+        url("fondo.avif") center center / cover no-repeat fixed;
+      font-family: "Poppins", system-ui, sans-serif;
+      color: #1f2937;
+    }
 
+    .card {
+      background: rgba(255, 255, 255, 0.93);
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+      padding: 40px 45px;
+      width: 100%;
+      max-width: 520px;
+      text-align: center;
+      backdrop-filter: blur(8px);
+    }
+
+    .titulo {
+      color: #0072ff;
+      font-size: 1.9rem;
+      font-weight: 700;
+      margin-bottom: 25px;
+    }
+
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn-primario {
+      background: #0072ff;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.25s ease, transform 0.05s ease;
+    }
+
+    .btn-primario:hover {
+      background: #00c6ff;
+    }
+
+    .btn-primario.rojo {
+      background: #e63946;
+    }
+
+    .btn-primario.rojo:hover {
+      background: #ff5f5f;
+    }
+
+    hr {
+      margin: 25px 0;
+      border: 1px solid #ddd;
+    }
+
+    .info {
+      text-align: left;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .info ul {
+      margin-left: 20px;
+      margin-top: 8px;
+    }
+
+    .info li {
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
 <body>
   <div class="card">
     <h1 class="titulo">Bienvenido a la Plataforma</h1>
@@ -19,12 +99,19 @@
       <button class="btn-primario rojo" onclick="cerrarSesion()">Cerrar Sesión</button>
     </div>
 
-    <hr style="margin: 25px 0; border: 1px solid #ddd;">
+    <hr>
 
-    <div style="text-align:left">
-      <p><b>Página API:</b> Interactúa con tres APIs (correo, imágenes y seccion de clima).</p>
-      <p><b>Página Formulario:</b> Envía datos reales mediante Email.</p>
-      <p><b>Página Operaciones:</b> Realiza cálculos interactivos con JavaScript.</p>
+    <div class="info">
+      <p>🌐 <b>Página API:</b> Interactúa con tres servicios reales:</p>
+      <ul>
+        <li>📧 <b>Correo Electrónico (EmailJS):</b> Permite enviar mensajes reales desde la web.</li>
+        <li>🖼️ <b>Imágenes Aleatorias:</b> Muestra fotos distintas cada vez que se actualiza.</li>
+        <li>🌤️ <b>Clima Actual:</b> Consulta la temperatura y condiciones del clima en tiempo real.</li>
+      </ul>
+
+      <p>📝 <b>Página Formulario:</b> Envía datos reales mediante <b>EmailJS</b> para pruebas y registros.</p>
+
+      <p>🧮 <b>Página Operaciones:</b> Realiza cálculos interactivos usando <b>JavaScript</b>, mostrando resultados automáticos con formato de miles y porcentajes.</p>
     </div>
   </div>
 
@@ -34,14 +121,12 @@
       const nombreGuardado = sessionStorage.getItem('nombre_usuario');
       const nombreDiv = document.getElementById('nombreUsuario');
 
-      // Si no hay usuario logueado, volver al login
       if (!usuario) {
         alert("Debes iniciar sesión primero.");
         window.location.href = 'index.html';
         return;
       }
 
-      // Mostrar el nombre guardado o pedirlo solo una vez
       let nombre = nombreGuardado;
       if (!nombre || nombre.trim() === "") {
         nombre = prompt('¿Cuál es tu nombre?');
@@ -51,7 +136,6 @@
 
       nombreDiv.textContent = `Hola, ${nombre}! 👋`;
 
-      // Funciones globales
       window.irA = (pagina) => window.location.href = pagina;
       window.cerrarSesion = () => {
         sessionStorage.clear();
