@@ -104,7 +104,6 @@
   <div class="card">
     <h1>🌐 Interacción con APIs</h1>
 
-    <!-- 🌤 CLIMA -->
     <section>
       <h2>🌤 API del Clima</h2>
       <input type="text" id="ciudad" placeholder="Escribí una ciudad (ej: Asunción)">
@@ -112,14 +111,12 @@
       <div id="climaResultado"></div>
     </section>
 
-    <!-- 🖼 IMÁGENES -->
     <section>
       <h2>🖼 Imagen Aleatoria</h2>
       <button class="btn-primario" onclick="mostrarImagen()">Mostrar Imagen</button>
       <div id="contenedorImagen"></div>
     </section>
 
-    <!-- 📧 CORREO -->
     <section>
       <h2>📧 Envío de Correo</h2>
       <input type="text" id="nombreCorreo" placeholder="Tu nombre">
@@ -132,12 +129,10 @@
     <button class="btn-primario rojo" onclick="window.location.href='principal.html'">Volver</button>
   </div>
 
-  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>
-    emailjs.init("x-X8iA20AVMQneCAA"); // 🔑 Tu Public Key
+    emailjs.init("x-X8iA20AVMQneCAA"); 
 
-    // 🌤 API DEL CLIMA (Open-Meteo)
     async function obtenerClima() {
       const ciudad = document.getElementById("ciudad").value.trim();
       const resultado = document.getElementById("climaResultado");
@@ -174,7 +169,6 @@
       }
     }
 
-    // 🖼 API DE IMÁGENES (Picsum)
     async function mostrarImagen() {
       const contenedor = document.getElementById("contenedorImagen");
       contenedor.innerHTML = "⏳ Cargando imagen...";
@@ -190,7 +184,6 @@
       }
     }
 
-    // 📧 API DE CORREO (EmailJS)
     function enviarCorreo() {
       const nombre = document.getElementById("nombreCorreo").value.trim();
       const email = document.getElementById("emailCorreo").value.trim();
