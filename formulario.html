@@ -104,14 +104,14 @@
     <input type="text" id="nombre" placeholder="Nombre y Apellido" />
     <input type="email" id="email" placeholder="Correo electrónico" />
 
-    <!-- Campo de calificación: solo números y máximo 2 dígitos -->
+    <!-- Calificación solo números, máximo 2 dígitos -->
     <input 
-      type="number"
-      id="calificacion"
+      type="text" 
+      id="calificacion" 
       placeholder="Calificación (00)"
-      min="0"
-      max="99"
-      oninput="this.value = this.value.replace(/[^0-9]/g,'').slice(0,2);" 
+      maxlength="2"
+      inputmode="numeric"
+      pattern="[0-9]*"
     />
 
     <textarea id="mensaje" rows="4" placeholder="Escribí tu mensaje..."></textarea>
@@ -125,6 +125,12 @@
   </div>
 
   <script>
+    // 🔹 Forzamos solo números y máximo 2 dígitos
+    const calificacionInput = document.getElementById('calificacion');
+    calificacionInput.addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/\D/g, '').slice(0, 2);
+    });
+
     // Inicialización de EmailJS
     (function() {
       emailjs.init("x-X8iA20AVMQneCAA"); // Tu Public Key
