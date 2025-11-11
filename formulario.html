@@ -104,14 +104,12 @@
     <input type="text" id="nombre" placeholder="Nombre y Apellido" />
     <input type="email" id="email" placeholder="Correo electrónico" />
 
-    <!-- Calificación solo números, máximo 2 dígitos -->
+    <!-- Campo Calificación: SOLO números, máximo 2 dígitos -->
     <input 
       type="text" 
       id="calificacion" 
-      placeholder="Calificación (00)"
+      placeholder="Calificación (00)" 
       maxlength="2"
-      inputmode="numeric"
-      pattern="[0-9]*"
     />
 
     <textarea id="mensaje" rows="4" placeholder="Escribí tu mensaje..."></textarea>
@@ -125,13 +123,28 @@
   </div>
 
   <script>
-    // 🔹 Forzamos solo números y máximo 2 dígitos
-    const calificacionInput = document.getElementById('calificacion');
-    calificacionInput.addEventListener('input', (e) => {
-      e.target.value = e.target.value.replace(/\D/g, '').slice(0, 2);
+    // 🔒 Bloquear todo excepto números y máximo 2 dígitos
+    const inputCalif = document.getElementById("calificacion");
+
+    // Mientras escribe o pega texto
+    inputCalif.addEventListener("input", () => {
+      inputCalif.value = inputCalif.value.replace(/[^0-9]/g, "").slice(0, 2);
     });
 
-    // Inicialización de EmailJS
+    // Bloquear teclas no numéricas
+    inputCalif.addEventListener("keydown", (e) => {
+      if (
+        // Permitir Backspace, Delete, Tab, Flechas, Enter
+        ["Backspace", "Delete", "Tab", "ArrowLeft", "ArrowRight", "Enter"].includes(e.key)
+      ) return;
+
+      // Bloquear letras o símbolos
+      if (!/[0-9]/.test(e.key) || inputCalif.value.length >= 2) {
+        e.preventDefault();
+      }
+    });
+
+    // Inicialización EmailJS
     (function() {
       emailjs.init("x-X8iA20AVMQneCAA"); // Tu Public Key
     })();
