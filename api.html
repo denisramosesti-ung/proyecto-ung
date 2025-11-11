@@ -1,260 +1,208 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Interacción con APIs</title>
-  <link rel="stylesheet" href="css/estilos.css" />
-  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <link rel="stylesheet" href="css/estilos.css">
   <style>
-    /* Fondo general */
     body {
+      margin: 0;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       background:
-        linear-gradient(135deg, rgba(0, 114, 255, 0.45), rgba(0, 198, 255, 0.45)),
+        linear-gradient(135deg, rgba(0,114,255,0.55), rgba(0,198,255,0.55)),
         url("fondo.avif") center center / cover no-repeat fixed;
-      font-family: "Poppins", sans-serif;
-      margin: 0;
-      padding: 20px;
+      font-family: "Poppins", system-ui, sans-serif;
+      color: #1f2937;
     }
 
-    /* Contenedor principal */
-    .card {
-      background: rgba(255, 255, 255, 0.92);
-      border-radius: 20px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-      padding: 35px;
+    .contenedor {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
       width: 100%;
-      max-width: 650px;
-      backdrop-filter: blur(6px);
+      max-width: 750px;
+      background: rgba(255, 255, 255, 0.93);
+      border-radius: 20px;
+      padding: 35px 40px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(8px);
     }
 
     h1 {
-      text-align: center;
       color: #0072ff;
-      margin-bottom: 30px;
-      font-size: 1.9rem;
+      margin-bottom: 10px;
+      text-align: center;
     }
 
     h2 {
-      font-size: 1.3rem;
-      margin-top: 25px;
+      font-size: 1.2rem;
       color: #1f2937;
+      margin: 15px 0 10px 0;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
-    input,
-    textarea {
+    input, textarea {
       width: 100%;
-      border: 2px solid #e5e7eb;
-      border-radius: 10px;
-      padding: 12px 15px;
-      font-size: 16px;
-      margin-bottom: 12px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+      font-size: 15px;
       outline: none;
-      transition: border-color 0.2s;
+      transition: border 0.2s ease;
     }
 
-    input:focus,
-    textarea:focus {
+    input:focus, textarea:focus {
       border-color: #0072ff;
-      box-shadow: 0 0 6px rgba(0, 114, 255, 0.2);
+      box-shadow: 0 0 4px rgba(0,114,255,0.4);
     }
 
-    button {
-      background: #0072ff;
-      color: white;
+    textarea {
+      resize: none;
+      min-height: 100px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
       border: none;
-      border-radius: 10px;
-      padding: 12px 20px;
+      border-radius: 12px;
       font-size: 16px;
+      color: white;
       cursor: pointer;
+      margin-top: 8px;
       transition: background 0.25s ease;
     }
 
-    button:hover {
-      background: #00c6ff;
+    .btn.azul { background: #0072ff; }
+    .btn.azul:hover { background: #00c6ff; }
+    .btn.volver { background: #0072ff; margin-top: 15px; }
+
+    .mensaje {
+      margin-top: 10px;
+      font-weight: 600;
+      text-align: center;
     }
 
-    .btn-rojo {
-      background: #e63946;
-      margin-top: 15px;
-    }
+    .mensaje.ok { color: #18a558; }
+    .mensaje.error { color: #e63946; }
 
-    .btn-rojo:hover {
-      background: #ff5f5f;
+    img {
+      margin-top: 12px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      max-width: 100%;
     }
 
     hr {
-      border: 0;
-      border-top: 1px solid #ddd;
-      margin: 25px 0;
-    }
-
-    #imagenAleatoria {
-      display: block;
+      border: 1px solid #ddd;
       width: 100%;
-      max-height: 250px;
-      border-radius: 12px;
-      margin-top: 15px;
-      object-fit: cover;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    }
-
-    #resultadoCorreo,
-    #resultadoClima {
-      margin-top: 10px;
-      font-weight: bold;
-      text-align: center;
+      margin: 20px 0;
     }
   </style>
 </head>
-
 <body>
-  <div class="card">
+  <div class="contenedor">
     <h1>🌐 Interacción con APIs</h1>
 
-    <!-- API de Correo -->
+    <!-- 📨 API DE CORREO -->
     <h2>📩 Enviar Mensaje</h2>
-    <input type="text" id="nombreCorreo" placeholder="Nombre y Apellido" />
-    <input type="email" id="emailUsuario" placeholder="Correo electrónico" />
-    <textarea id="mensajeCorreo" rows="3" placeholder="Escribí tu mensaje..."></textarea>
-    <button id="btnCorreo">Enviar</button>
-    <p id="resultadoCorreo"></p>
+    <input type="text" id="nombre" placeholder="Nombre y Apellido" required>
+    <input type="email" id="correo" placeholder="Correo electrónico" required>
+    <textarea id="mensaje" placeholder="Escribí tu mensaje..." required></textarea>
+    <button class="btn azul" onclick="enviarCorreo()">Enviar</button>
+    <p id="estadoCorreo" class="mensaje"></p>
 
-    <hr />
+    <hr>
 
-    <!-- API de Imagen Aleatoria -->
+    <!-- 🐱 API DE IMÁGENES -->
     <h2>🐱 Imagen Aleatoria</h2>
-    <button id="btnImagen">Mostrar Imagen</button>
-    <img id="imagenAleatoria" src="" alt="" />
+    <button class="btn azul" onclick="mostrarImagen()">Mostrar Imagen</button>
+    <img id="imagen" alt="Imagen aleatoria" style="display:none;">
 
-    <hr />
+    <hr>
 
-    <!-- API de Clima (Global sin key) -->
-    <h2>🌤️ Clima Actual</h2>
-    <input
-      type="text"
-      id="ciudad"
-      placeholder="Escribí una ciudad (ej: Asuncion, Madrid, Tokyo)"
-    />
-    <button id="btnClima">Obtener Clima</button>
-    <p id="resultadoClima"></p>
+    <!-- ☀️ API DEL CLIMA -->
+    <h2>☀️ Clima Actual</h2>
+    <input type="text" id="ciudad" placeholder="Escribí una ciudad (ej: Asunción)">
+    <button class="btn azul" onclick="obtenerClima()">Obtener Clima</button>
+    <p id="clima" class="mensaje"></p>
 
-    <hr />
-
-    <button class="btn-rojo" onclick="window.location.href='principal.html'">Volver</button>
+    <button class="btn volver" onclick="window.location.href='principal.html'">Volver</button>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>
-    // ====== EMAILJS CONFIGURACIÓN ======
-    (function () {
-      emailjs.init("x-X8iA20AVMQneCAA"); // tu Public Key
-    })();
+    emailjs.init("x-X8iA20AVMQneCAA"); // tu Public Key
 
-    document.getElementById("btnCorreo").addEventListener("click", () => {
-      const nombre = document.getElementById("nombreCorreo").value.trim();
-      const email = document.getElementById("emailUsuario").value.trim();
-      const mensaje = document.getElementById("mensajeCorreo").value.trim();
-      const resultado = document.getElementById("resultadoCorreo");
+    function enviarCorreo() {
+      const nombre = document.getElementById("nombre").value.trim();
+      const correo = document.getElementById("correo").value.trim();
+      const mensaje = document.getElementById("mensaje").value.trim();
+      const estado = document.getElementById("estadoCorreo");
 
-      if (!nombre || !email || !mensaje) {
-        resultado.textContent = "⚠️ Por favor, completá todos los campos.";
-        resultado.style.color = "red";
+      if (!nombre || !correo || !mensaje) {
+        estado.textContent = "⚠️ Completá todos los campos antes de enviar.";
+        estado.className = "mensaje error";
         return;
       }
 
-      resultado.textContent = "⏳ Enviando mensaje...";
-      resultado.style.color = "#333";
+      const params = {
+        user: nombre,
+        email: correo,
+        message: mensaje,
+      };
 
-      emailjs
-        .send("service_gcpdw9g", "template_tynh8q2", {
-          user: nombre,
-          email: email,
-          message: mensaje,
-        })
+      emailjs.send("service_4i6e4ii", "template_tynh8q2", params)
         .then(() => {
-          resultado.textContent = "✅ Mensaje enviado correctamente. ¡Gracias!";
-          resultado.style.color = "green";
+          estado.textContent = "✅ Mensaje enviado correctamente.";
+          estado.className = "mensaje ok";
+          document.getElementById("nombre").value = "";
+          document.getElementById("correo").value = "";
+          document.getElementById("mensaje").value = "";
         })
-        .catch((err) => {
-          console.error("Error EmailJS:", err);
-          resultado.textContent =
-            "❌ Error al enviar el mensaje. Intentalo más tarde.";
-          resultado.style.color = "red";
+        .catch(() => {
+          estado.textContent = "❌ Error al enviar el mensaje. Intentalo más tarde.";
+          estado.className = "mensaje error";
         });
-    });
+    }
 
-    // ====== API IMAGEN ALEATORIA ======
-    document.getElementById("btnImagen").addEventListener("click", () => {
-      const img = document.getElementById("imagenAleatoria");
-      img.src = `https://picsum.photos/600/300?random=${Math.floor(
-        Math.random() * 1000
-      )}`;
-    });
+    // 🐱 API de imágenes
+    function mostrarImagen() {
+      const img = document.getElementById("imagen");
+      img.style.display = "block";
+      img.src = "https://picsum.photos/600?random=" + Math.floor(Math.random() * 1000);
+    }
 
-    // ====== API CLIMA GLOBAL (Nominatim + Open-Meteo) ======
-    document.getElementById("btnClima").addEventListener("click", async () => {
+    // ☀️ API del clima (meteo open)
+    async function obtenerClima() {
       const ciudad = document.getElementById("ciudad").value.trim();
-      const resultado = document.getElementById("resultadoClima");
+      const clima = document.getElementById("clima");
 
       if (!ciudad) {
-        resultado.textContent = "⚠️ Ingresá una ciudad (ej: Asuncion, Madrid, Tokyo)";
-        resultado.style.color = "red";
+        clima.textContent = "⚠️ Ingresá una ciudad.";
+        clima.className = "mensaje error";
         return;
       }
 
-      resultado.textContent = "⏳ Buscando clima...";
-      resultado.style.color = "#333";
-
       try {
-        // Paso 1: Buscar coordenadas con Nominatim
-        const geoUrl = `https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(
-          ciudad
-        )}&format=json&limit=1`;
-        const geoRes = await fetch(geoUrl);
-        const geoData = await geoRes.json();
-
-        if (!geoData || geoData.length === 0) {
-          throw new Error("Ciudad no encontrada");
-        }
-
-        const lat = geoData[0].lat;
-        const lon = geoData[0].lon;
-
-        // Paso 2: Consultar clima con Open-Meteo
-        const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
-        const weatherRes = await fetch(weatherUrl);
-        const weatherData = await weatherRes.json();
-
-        if (!weatherData.current_weather) {
-          throw new Error("No se pudo obtener el clima.");
-        }
-
-        const temp = weatherData.current_weather.temperature.toFixed(1);
-        const viento = weatherData.current_weather.windspeed;
-        const hora = new Date(weatherData.current_weather.time).toLocaleTimeString(
-          "es-ES",
-          { hour: "2-digit", minute: "2-digit" }
-        );
-
-        resultado.innerHTML = `
-          🌍 <b>${ciudad.charAt(0).toUpperCase() + ciudad.slice(1)}</b><br>
-          🌡️ <b>${temp} °C</b> — viento ${viento} km/h<br>
-        `;
-        resultado.style.color = "#0072ff";
-      } catch (err) {
-        console.error("Error clima global:", err);
-        resultado.textContent =
-          "❌ No se pudo obtener el clima. Verificá el nombre o la conexión.";
-        resultado.style.color = "red";
+        const res = await fetch(`https://www.meteoapi.com/api/v1/current?city=${encodeURIComponent(ciudad)}&lang=es`);
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        clima.textContent = `🌡️ ${data.current.temp_c}°C - ${data.current.condition.text}`;
+        clima.className = "mensaje ok";
+      } catch {
+        clima.textContent = "❌ No se pudo obtener el clima.";
+        clima.className = "mensaje error";
       }
-    });
+    }
   </script>
 </body>
 </html>
