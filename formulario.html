@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Formulario de Contacto</title>
+  <title>Formulario de Evaluación</title>
   <link rel="stylesheet" href="css/estilos.css">
   <style>
     body {
@@ -19,31 +19,29 @@
       color: #1f2937;
     }
 
-    .card {
+    .contenedor {
       background: rgba(255, 255, 255, 0.93);
       border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-      padding: 40px 45px;
+      padding: 35px 40px;
       width: 100%;
-      max-width: 520px;
+      max-width: 600px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
       text-align: center;
       backdrop-filter: blur(8px);
     }
 
-    .titulo {
+    h1 {
       color: #0072ff;
-      font-size: 1.9rem;
-      font-weight: 700;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
 
     input, textarea {
       width: 100%;
       padding: 12px 16px;
+      margin-bottom: 15px;
       border-radius: 12px;
       border: 1px solid #ccc;
-      margin-bottom: 15px;
-      font-size: 16px;
+      font-size: 15px;
       outline: none;
       transition: border 0.2s ease;
     }
@@ -66,85 +64,67 @@
       font-size: 16px;
       color: white;
       cursor: pointer;
-      margin-bottom: 10px;
       transition: background 0.25s ease;
     }
 
-    .btn.enviar {
-      background: #0072ff;
-    }
-
-    .btn.limpiar {
-      background: #e63946;
-    }
-
-    .btn.volver {
-      background: #0072ff;
-      margin-top: 10px;
-    }
-
-    .btn.enviar:hover {
-      background: #00c6ff;
-    }
-
-    .btn.limpiar:hover {
-      background: #ff5f5f;
-    }
-
-    .btn.volver:hover {
-      background: #00c6ff;
-    }
+    .btn.azul { background: #0072ff; }
+    .btn.azul:hover { background: #00c6ff; }
+    .btn.limpiar { background: #e63946; margin-top: 8px; }
+    .btn.limpiar:hover { background: #ff5f5f; }
+    .btn.volver { background: #0072ff; margin-top: 20px; }
 
     .mensaje {
-      margin-top: 12px;
+      margin-top: 10px;
       font-weight: 600;
+      text-align: center;
     }
 
-    .mensaje.error {
-      color: #e63946;
-    }
-
-    .mensaje.ok {
-      color: #18a558;
-    }
+    .mensaje.ok { color: #18a558; }
+    .mensaje.error { color: #e63946; }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1 class="titulo">📝 Formulario de Calificacion
-    <form id="formulario">
-      <input type="text" id="nombre" placeholder="Nombre y Apellido" required>
-      <input type="number" id="calificacion" placeholder="Calificación (1 a 10)" min="1" max="10" step="1" required>
-      <textarea id="mensaje" placeholder="Escribe tu mensaje aquí..." required></textarea>
+  <div class="contenedor">
+    <h1>📋 Formulario de Evaluación</h1>
 
-      <button type="submit" class="btn enviar">Enviar</button>
-      <button type="reset" class="btn limpiar">Limpiar</button>
-      <button type="button" class="btn volver" onclick="window.location.href='principal.html'">Volver</button>
-    </form>
+    <input type="text" id="nombre" placeholder="Nombre y Apellido" required>
+
+    <input type="text" id="calificacion" placeholder="Calificación (1 - 10)" 
+      maxlength="2" 
+      inputmode="numeric"
+      pattern="[0-9]*"
+      oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 2);">
+
+    <textarea id="mensaje" placeholder="Escribí tu comentario o mensaje..." required></textarea>
+
+    <button class="btn azul" onclick="enviarFormulario()">Enviar</button>
+    <button class="btn limpiar" onclick="limpiarCampos()">Limpiar</button>
 
     <p id="estado" class="mensaje"></p>
+
+    <button class="btn volver" onclick="window.location.href='principal.html'">Volver</button>
   </div>
 
+  <!-- EmailJS -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>
-    emailjs.init("x-X8iA20AVMQneCAA"); // tu Public Key
+    emailjs.init("x-X8iA20AVMQneCAA"); // Tu public key
 
-    document.getElementById("formulario").addEventListener("submit", function (event) {
-      event.preventDefault();
-
+    function enviarFormulario() {
       const nombre = document.getElementById("nombre").value.trim();
       const calificacion = document.getElementById("calificacion").value.trim();
       const mensaje = document.getElementById("mensaje").value.trim();
       const estado = document.getElementById("estado");
 
       if (!nombre || !calificacion || !mensaje) {
-        estado.textContent = "⚠️ Todos los campos son obligatorios.";
+        estado.textContent = "⚠️ Completá todos los campos antes de enviar.";
         estado.className = "mensaje error";
         return;
       }
 
-      if (isNaN(calificacion) || calificacion < 1 || calificacion > 10) {
-        estado.textContent = "⚠️ La calificación debe ser un número entre 1 y 10.";
+      const califNum = parseInt(calificacion);
+      if (isNaN(califNum) || califNum < 0 || califNum > 99) {
+        estado.textContent = "⚠️ La calificación debe ser un número entre 0 y 99.";
         estado.className = "mensaje error";
         return;
       }
@@ -152,20 +132,27 @@
       const params = {
         user: nombre,
         calificacion: calificacion,
-        message: mensaje,
+        message: mensaje
       };
 
-      emailjs.send("service_4i6e4ii", "template_47h8ew5", params)
+      emailjs.send("service_4i6e4ii", "template_tynh8q2", params)
         .then(() => {
-          estado.textContent = "✅ Mensaje enviado correctamente.";
+          estado.textContent = "✅ Formulario enviado correctamente.";
           estado.className = "mensaje ok";
-          document.getElementById("formulario").reset();
+          limpiarCampos();
         })
         .catch(() => {
           estado.textContent = "❌ Error al enviar el formulario. Intentalo más tarde.";
           estado.className = "mensaje error";
         });
-    });
+    }
+
+    function limpiarCampos() {
+      document.getElementById("nombre").value = "";
+      document.getElementById("calificacion").value = "";
+      document.getElementById("mensaje").value = "";
+      document.getElementById("estado").textContent = "";
+    }
   </script>
 </body>
 </html>
