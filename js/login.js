@@ -1,4 +1,3 @@
-// Inicializar EmailJS con tu clave pública
 (function() {
   emailjs.init('x-X8iA20AVMQneCAA'); // Public Key
 })();
