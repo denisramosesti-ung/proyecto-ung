@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Formulario de Calificación - UNG</title>
+  <title>Formulario de Calificación</title>
 
   <style>
     body {
@@ -18,7 +18,7 @@
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.93);
+      background: rgba(255, 255, 255, 0.95);
       border-radius: 22px;
       padding: 40px 35px;
       width: 420px;
@@ -85,6 +85,7 @@
     <h2>📝 Formulario de Calificación</h2>
 
     <input type="text" id="nombre" placeholder="Nombre y Apellido">
+    <input type="hidden" id="email" value="no-reply@ung.edu.py"> <!-- Campo invisible -->
     
     <input type="number" id="calificacion" placeholder="Calificación (1 a 10)"
            min="1" max="10"
@@ -101,12 +102,13 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>
-    emailjs.init("x-X8iA20AVMQneCAA"); // 🔑 Tu Public Key de EmailJS
+    emailjs.init("x-X8iA20AVMQneCAA"); // 🔑 Public Key
 
     function enviarFormulario() {
       const nombre = document.getElementById("nombre").value.trim();
       const calificacion = document.getElementById("calificacion").value.trim();
       const mensaje = document.getElementById("mensaje").value.trim();
+      const email = document.getElementById("email").value.trim();
       const estado = document.getElementById("estadoForm");
 
       if (!nombre || !calificacion || !mensaje) {
@@ -115,7 +117,6 @@
         return;
       }
 
-      // Validar calificación numérica entre 1 y 10
       const num = parseInt(calificacion);
       if (isNaN(num) || num < 1 || num > 10) {
         estado.textContent = "⚠️ La calificación debe ser un número entre 1 y 10.";
@@ -125,6 +126,7 @@
 
       const params = {
         user: nombre,
+        email: email, // campo agregado para ReplyTo
         calificacion: calificacion,
         message: mensaje
       };
@@ -133,13 +135,14 @@
       estado.style.color = "#333";
 
       emailjs.send("service_gcpdw9g", "template_nnt49b8", params)
-        .then(() => {
+        .then((response) => {
+          console.log("✅ Envío correcto:", response);
           estado.textContent = "✅ Formulario enviado correctamente.";
           estado.style.color = "green";
         })
         .catch((error) => {
-          console.error(error);
-          estado.textContent = "❌ Error al enviar el formulario. Intentá más tarde.";
+          console.error("❌ Error:", error);
+          estado.textContent = "❌ Error al enviar el formulario. Verificá tu conexión o EmailJS.";
           estado.style.color = "red";
         });
     }
