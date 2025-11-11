@@ -133,12 +133,12 @@
     <button class="btn-primario rojo" onclick="window.location.href='principal.html'">Volver</button>
   </div>
 
-  <!-- Scripts -->
+  <!-- 📦 Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>
-    emailjs.init("x-X8iA20AVMQneCAA"); // Public Key
+    emailjs.init("x-X8iA20AVMQneCAA"); // tu Public Key
 
-    // 🌤 API DEL CLIMA (Meteo Open)
+    // 🌤 API DEL CLIMA (Open-Meteo con geocodificación)
     async function obtenerClima() {
       const ciudad = document.getElementById("ciudad").value.trim();
       const resultado = document.getElementById("climaResultado");
@@ -149,11 +149,25 @@
       }
       resultado.textContent = "⏳ Buscando...";
       try {
-        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=-25.3&longitude=-57.6&current_weather=true`);
-        const data = await res.json();
-        if (data && data.current_weather) {
-          resultado.textContent = `🌡️ Temperatura actual en ${ciudad}: ${data.current_weather.temperature}°C, viento ${data.current_weather.windspeed} km/h`;
-          resultado.style.color = "#222";
+        // Primero obtenemos latitud y longitud según el nombre
+        const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(ciudad)}&count=1&language=es&format=json`);
+        const geoData = await geoRes.json();
+
+        if (!geoData.results || geoData.results.length === 0) {
+          resultado.textContent = "❌ Ciudad no encontrada.";
+          resultado.style.color = "red";
+          return;
+        }
+
+        const { latitude, longitude, name, country } = geoData.results[0];
+
+        // Luego obtenemos el clima
+        const climaRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`);
+        const climaData = await climaRes.json();
+
+        if (climaData && climaData.current_weather) {
+          resultado.innerHTML = `🌍 ${name}, ${country}<br>🌡️ ${climaData.current_weather.temperature}°C<br>💨 Viento: ${climaData.current_weather.windspeed} km/h`;
+          resultado.style.color = "#111";
         } else {
           resultado.textContent = "❌ No se pudo obtener el clima.";
           resultado.style.color = "red";
@@ -164,12 +178,12 @@
       }
     }
 
-    // 🖼️ API DE IMÁGENES (Unsplash)
+    // 🖼️ API DE IMÁGENES (Picsum)
     async function mostrarImagen() {
       const contenedor = document.getElementById("contenedorImagen");
       contenedor.innerHTML = "⏳ Cargando imagen...";
       try {
-        const res = await fetch("https://source.unsplash.com/random/600x400/?nature,landscape");
+        const res = await fetch("https://picsum.photos/600/400");
         if (res.url) {
           contenedor.innerHTML = `<img src="${res.url}" alt="Imagen aleatoria">`;
         } else {
@@ -193,7 +207,11 @@
         return;
       }
 
-      const params = { user: nombre, email: email, message: mensaje };
+      const params = {
+        user: nombre,
+        email: email,
+        message: mensaje
+      };
 
       estado.textContent = "⏳ Enviando...";
       estado.style.color = "#333";
