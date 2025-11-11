@@ -149,29 +149,54 @@ textarea:focus {
    ============================== */
 table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   margin-top: 20px;
   text-align: center;
+  border: 2px solid var(--color-primario);
   border-radius: var(--borde-radio);
   overflow: hidden;
 }
 
-th, td {
-  border: 2px solid var(--color-primario);
-  padding: 10px;
-  border-radius: 0;
-}
-
+/* Encabezados */
 th {
   background: var(--color-primario);
   color: white;
+  padding: 12px;
+  font-weight: 600;
+  border: none;
   animation: brillo 3s infinite ease-in-out;
 }
 
+/* Celdas */
+td {
+  padding: 10px;
+  border: 1px solid var(--color-primario);
+}
+
+/* Bordes redondeados reales en las esquinas */
+table tr:first-child th:first-child {
+  border-top-left-radius: var(--borde-radio);
+}
+
+table tr:first-child th:last-child {
+  border-top-right-radius: var(--borde-radio);
+}
+
+table tr:last-child td:first-child {
+  border-bottom-left-radius: var(--borde-radio);
+}
+
+table tr:last-child td:last-child {
+  border-bottom-right-radius: var(--borde-radio);
+}
+
+/* Animación de color */
 @keyframes brillo {
   0%, 100% { background: var(--color-primario); }
   50% { background: var(--color-secundario); }
 }
+
 
 /* ==============================
    EFECTOS VARIOS
