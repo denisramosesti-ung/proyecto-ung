@@ -7,23 +7,27 @@
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
       margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       background: linear-gradient(135deg, rgba(0,114,255,0.55), rgba(0,198,255,0.55)),
                   url("fondo.avif") center center / cover no-repeat fixed;
       font-family: "Poppins", sans-serif;
     }
 
     .card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       background: rgba(255, 255, 255, 0.93);
       border-radius: 22px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-      padding: 35px 40px;
+      padding: 40px 50px;
       width: 100%;
-      max-width: 460px;
+      max-width: 480px;
       text-align: center;
       backdrop-filter: blur(8px);
     }
@@ -63,12 +67,12 @@
       cursor: pointer;
       transition: background 0.3s ease;
       margin-top: 8px;
+      font-weight: 600;
     }
 
     .btn-primario {
       background: #0072ff;
       color: white;
-      font-weight: 600;
     }
 
     .btn-primario:hover {
@@ -78,7 +82,6 @@
     .btn-rojo {
       background: #e63946;
       color: white;
-      font-weight: 600;
     }
 
     .btn-rojo:hover {
@@ -141,7 +144,8 @@
   </div>
 
   <script>
-    emailjs.init("x-X8iA20AVMQneCAA"); // 🔑 Tu PUBLIC KEY
+    // Inicializa EmailJS
+    emailjs.init("x-X8iA20AVMQneCAA"); // Tu PUBLIC KEY
 
     function validarCalificacion(input) {
       input.value = input.value.replace(/[^0-9]/g, "");
