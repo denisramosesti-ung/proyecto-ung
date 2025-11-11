@@ -129,7 +129,7 @@
 
     <hr>
 
-    <!-- API de Clima -->
+    <!-- API de Clima (Open-Meteo) -->
     <h2>🌤️ Clima Actual</h2>
     <input type="text" id="ciudad" placeholder="Escribí una ciudad (ej: Asuncion)">
     <button id="btnClima">Obtener Clima</button>
@@ -184,40 +184,58 @@
       img.src = `https://picsum.photos/600/300?random=${Math.floor(Math.random() * 1000)}`;
     });
 
-    // ====== API CLIMA ======
+    // ====== API CLIMA (Open-Meteo, sin key) ======
     document.getElementById("btnClima").addEventListener("click", () => {
       const ciudad = document.getElementById("ciudad").value.trim();
       const resultado = document.getElementById("resultadoClima");
-	  const apiKey = "df47f20779cbf111135dc9b039ad37a1";
-
 
       if (!ciudad) {
-        resultado.textContent = "⚠️ Ingresá una ciudad.";
+        resultado.textContent = "⚠️ Ingresá una ciudad (ej: Asuncion)";
         resultado.style.color = "red";
         return;
       }
 
-      resultado.textContent = "⏳ Buscando...";
+      resultado.textContent = "⏳ Buscando clima...";
       resultado.style.color = "#333";
 
-      fetch(`https://api.openweathermap.org/data/2.5/weather?q=${ciudad}&appid=${apiKey}&units=metric&lang=es`)
-        .then(response => {
-          if (!response.ok) throw new Error("Ciudad no encontrada");
-          return response.json();
-        })
+      // Coordenadas básicas para ciudades paraguayas
+      const coords = {
+        asuncion: { lat: -25.3, lon: -57.64 },
+        encarnacion: { lat: -27.33, lon: -55.87 },
+        ciudad_del_este: { lat: -25.51, lon: -54.61 },
+        concepcion: { lat: -23.41, lon: -57.43 }
+      };
+
+      const key = ciudad.toLowerCase().replaceAll(" ", "_");
+      const ubicacion = coords[key];
+
+      if (!ubicacion) {
+        resultado.textContent = "❌ Ciudad no registrada. Probá Asuncion, Encarnacion, Ciudad del Este o Concepcion.";
+        resultado.style.color = "red";
+        return;
+      }
+
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${ubicacion.lat}&longitude=${ubicacion.lon}&current_weather=true`;
+
+      fetch(url)
+        .then(res => res.json())
         .then(data => {
+          const temp = data.current_weather.temperature.toFixed(1);
+          const viento = data.current_weather.windspeed;
+          const hora = new Date(data.current_weather.time).toLocaleTimeString("es-PY", { hour: '2-digit', minute: '2-digit' });
+
           resultado.innerHTML = `
-            🌍 Ciudad: <b>${data.name}</b><br>
-            🌡️ Temperatura: <b>${data.main.temp.toFixed(1)} °C</b><br>
-            ☁️ Estado: <b>${data.weather[0].description}</b>
+            🌡️ <b>${temp} °C</b> — viento ${viento} km/h<br>
+            🕒 Actualizado a las ${hora}
           `;
           resultado.style.color = "#0072ff";
         })
         .catch(() => {
-          resultado.textContent = "❌ No se pudo obtener el clima.";
+          resultado.textContent = "❌ No se pudo obtener el clima en este momento.";
           resultado.style.color = "red";
         });
     });
   </script>
 </body>
 </html>
+
