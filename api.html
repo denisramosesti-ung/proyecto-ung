@@ -3,56 +3,220 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Página API</title>
+  <title>Interacción con APIs</title>
   <link rel="stylesheet" href="css/estilos.css">
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <style>
+    /* Fondo general */
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        linear-gradient(135deg, rgba(0,114,255,0.45), rgba(0,198,255,0.45)),
+        url("fondo.avif") center center / cover no-repeat fixed;
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    /* Contenedor principal */
+    .card {
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      padding: 35px;
+      width: 100%;
+      max-width: 650px;
+      backdrop-filter: blur(6px);
+    }
+
+    h1 {
+      text-align: center;
+      color: #0072ff;
+      margin-bottom: 30px;
+      font-size: 1.9rem;
+    }
+
+    h2 {
+      font-size: 1.3rem;
+      margin-top: 25px;
+      color: #1f2937;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    input, textarea {
+      width: 100%;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 12px 15px;
+      font-size: 16px;
+      margin-bottom: 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #0072ff;
+      box-shadow: 0 0 6px rgba(0,114,255,0.2);
+    }
+
+    button {
+      background: #0072ff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.25s ease;
+    }
+
+    button:hover { background: #00c6ff; }
+
+    .btn-rojo {
+      background: #e63946;
+      margin-top: 15px;
+    }
+
+    .btn-rojo:hover { background: #ff5f5f; }
+
+    hr {
+      border: 0;
+      border-top: 1px solid #ddd;
+      margin: 25px 0;
+    }
+
+    #imagenAleatoria {
+      display: block;
+      width: 100%;
+      max-height: 250px;
+      border-radius: 12px;
+      margin-top: 15px;
+      object-fit: cover;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    #resultadoCorreo, #resultadoClima {
+      margin-top: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
 </head>
-<body class="bg-gradiente">
+
+<body>
   <div class="card">
-    <h1 class="titulo">Interacción con APIs</h1>
+    <h1>🌐 Interacción con APIs</h1>
 
-    <div class="form">
-      <button class="btn-primario" onclick="mostrarImagen()">Mostrar Imagen Aleatoria</button>
-      <button class="btn-primario" onclick="simularCorreo()">Simular Envío de Correo</button>
-      <button class="btn-primario" onclick="mostrarFrase()">Mostrar Frase Motivacional</button>
-      <button class="btn-primario" onclick="volver()">Volver</button>
-    </div>
+    <!-- API de Correo -->
+    <h2>📩 Enviar Mensaje</h2>
+    <input type="text" id="nombreCorreo" placeholder="Nombre y Apellido">
+    <input type="email" id="emailUsuario" placeholder="Correo electrónico">
+    <textarea id="mensajeCorreo" rows="3" placeholder="Escribí tu mensaje..."></textarea>
+    <button id="btnCorreo">Enviar</button>
+    <p id="resultadoCorreo"></p>
 
-    <div id="contenidoAPI" style="margin-top: 25px;"></div>
+    <hr>
+
+    <!-- API de Imagen Aleatoria -->
+    <h2>🐱 Imagen Aleatoria</h2>
+    <button id="btnImagen">Mostrar Imagen</button>
+    <img id="imagenAleatoria" src="" alt="">
+
+    <hr>
+
+    <!-- API de Clima -->
+    <h2>🌤️ Clima Actual</h2>
+    <input type="text" id="ciudad" placeholder="Escribí una ciudad (ej: Asuncion)">
+    <button id="btnClima">Obtener Clima</button>
+    <p id="resultadoClima"></p>
+
+    <hr>
+
+    <button class="btn-rojo" onclick="window.location.href='principal.html'">Volver</button>
   </div>
 
   <script>
-    const contenedor = document.getElementById('contenidoAPI');
+    // ====== EMAILJS CONFIGURACIÓN ======
+    (function() {
+      emailjs.init("x-X8iA20AVMQneCAA"); // tu Public Key
+    })();
 
-    function mostrarImagen() {
-      const img = `<img src="https://picsum.photos/400?random=${Math.random()}" 
-                        alt="Imagen aleatoria"
-                        style="border-radius:10px; margin-top:15px;">`;
-      contenedor.innerHTML = img;
-    }
+    document.getElementById("btnCorreo").addEventListener("click", () => {
+      const nombre = document.getElementById("nombreCorreo").value.trim();
+      const email = document.getElementById("emailUsuario").value.trim();
+      const mensaje = document.getElementById("mensajeCorreo").value.trim();
+      const resultado = document.getElementById("resultadoCorreo");
 
-    function simularCorreo() {
-      contenedor.innerHTML = `
-        <p style="color: var(--c-ok); font-weight:bold;">
-          ✉️ Correo enviado exitosamente a user@example.com
-        </p>`;
-    }
+      if (!nombre || !email || !mensaje) {
+        resultado.textContent = "⚠️ Por favor, completá todos los campos.";
+        resultado.style.color = "red";
+        return;
+      }
 
-    function mostrarFrase() {
-      fetch('https://api.quotable.io/random')
-        .then(res => res.json())
+      resultado.textContent = "⏳ Enviando mensaje...";
+      resultado.style.color = "#333";
+
+      emailjs
+        .send("service_gcpdw9g", "template_tynh8q2", {
+          user: nombre,
+          email: email,
+          message: mensaje,
+        })
+        .then(() => {
+          resultado.textContent = "✅ Mensaje enviado correctamente. ¡Gracias!";
+          resultado.style.color = "green";
+        })
+        .catch((err) => {
+          console.error("Error EmailJS:", err);
+          resultado.textContent = "❌ Error al enviar el mensaje. Intentalo más tarde.";
+          resultado.style.color = "red";
+        });
+    });
+
+    // ====== API IMAGEN ALEATORIA ======
+    document.getElementById("btnImagen").addEventListener("click", () => {
+      const img = document.getElementById("imagenAleatoria");
+      img.src = `https://picsum.photos/600/300?random=${Math.floor(Math.random() * 1000)}`;
+    });
+
+    // ====== API CLIMA ======
+    document.getElementById("btnClima").addEventListener("click", () => {
+      const ciudad = document.getElementById("ciudad").value.trim();
+      const resultado = document.getElementById("resultadoClima");
+      const apiKey = "6eec30a0fca0b6a7dc9c2b4e372b6f28"; // tu clave OpenWeatherMap
+
+      if (!ciudad) {
+        resultado.textContent = "⚠️ Ingresá una ciudad.";
+        resultado.style.color = "red";
+        return;
+      }
+
+      resultado.textContent = "⏳ Buscando...";
+      resultado.style.color = "#333";
+
+      fetch(`https://api.openweathermap.org/data/2.5/weather?q=${ciudad}&appid=${apiKey}&units=metric&lang=es`)
+        .then(response => {
+          if (!response.ok) throw new Error("Ciudad no encontrada");
+          return response.json();
+        })
         .then(data => {
-          contenedor.innerHTML = `
-            <p style="font-style:italic; margin-top:15px;">"${data.content}"</p>
-            <p>— ${data.author}</p>`;
+          resultado.innerHTML = `
+            🌍 Ciudad: <b>${data.name}</b><br>
+            🌡️ Temperatura: <b>${data.main.temp.toFixed(1)} °C</b><br>
+            ☁️ Estado: <b>${data.weather[0].description}</b>
+          `;
+          resultado.style.color = "#0072ff";
         })
         .catch(() => {
-          contenedor.innerHTML = `<p style="color:red;">Error al obtener frase.</p>`;
+          resultado.textContent = "❌ No se pudo obtener el clima.";
+          resultado.style.color = "red";
         });
-    }
-
-    function volver() {
-      window.location.href = 'principal.html';
-    }
+    });
   </script>
 </body>
 </html>
