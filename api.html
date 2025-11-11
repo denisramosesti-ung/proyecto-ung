@@ -113,14 +113,53 @@
     <h1>🌐 Interacción con APIs</h1>
 
     <!-- 📨 API DE CORREO -->
-    <h2>📩 Enviar Mensaje</h2>
-    <input type="text" id="nombre" placeholder="Nombre y Apellido" required>
-    <input type="email" id="correo" placeholder="Correo electrónico" required>
-    <textarea id="mensaje" placeholder="Escribí tu mensaje..." required></textarea>
-    <button class="btn azul" onclick="enviarCorreo()">Enviar</button>
-    <p id="estadoCorreo" class="mensaje"></p>
+    <section class="card">
+  <h2>📧 Enviar Mensaje</h2>
+  <input type="text" id="nombre" placeholder="Nombre y Apellido">
+  <input type="email" id="correo" placeholder="Correo electrónico">
+  <textarea id="mensaje" rows="4" placeholder="Escribí tu mensaje..."></textarea>
+  <button class="btn-primario" onclick="enviarCorreo()">Enviar</button>
+  <p id="estadoCorreo" class="mensaje"></p>
+</section>
 
-    <hr>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+emailjs.init("x-X8iA20AVMQneCAA");
+
+function enviarCorreo() {
+  const nombre = document.getElementById("nombre").value.trim();
+  const correo = document.getElementById("correo").value.trim();
+  const mensaje = document.getElementById("mensaje").value.trim();
+  const estado = document.getElementById("estadoCorreo");
+
+  if (!nombre || !correo || !mensaje) {
+    estado.textContent = "⚠️ Completa todos los campos.";
+    estado.style.color = "red";
+    return;
+  }
+
+  const params = {
+    user: nombre,
+    email: correo,
+    message: mensaje
+  };
+
+  estado.textContent = "⏳ Enviando...";
+  estado.style.color = "#333";
+
+  emailjs.send("service_4i6e4ii", "template_3aikrip", params)
+  .then(() => {
+    estado.textContent = "✅ Mensaje enviado correctamente.";
+    estado.style.color = "green";
+  })
+  .catch((error) => {
+    console.error(error);
+    estado.textContent = "❌ Error al enviar. Intentá más tarde.";
+    estado.style.color = "red";
+  });
+}
+</script>
+
 
     <!-- 🐱 API DE IMÁGENES -->
     <h2>🐱 Imagen Aleatoria</h2>
