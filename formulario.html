@@ -104,11 +104,12 @@
     <input type="text" id="nombre" placeholder="Nombre y Apellido" />
     <input type="email" id="email" placeholder="Correo electrónico" />
 
-    <!-- Campo Calificación: SOLO números, máximo 2 dígitos -->
+    <!-- Calificación: solo números, máximo 2 -->
     <input 
-      type="text" 
       id="calificacion" 
+      type="text" 
       placeholder="Calificación (00)" 
+      inputmode="numeric" 
       maxlength="2"
     />
 
@@ -123,40 +124,40 @@
   </div>
 
   <script>
-    // 🔒 Bloquear todo excepto números y máximo 2 dígitos
-    const inputCalif = document.getElementById("calificacion");
+    // Bloquear todo lo que no sea número y limitar a 2 dígitos
+    const calificacion = document.getElementById("calificacion");
 
-    // Mientras escribe o pega texto
-    inputCalif.addEventListener("input", () => {
-      inputCalif.value = inputCalif.value.replace(/[^0-9]/g, "").slice(0, 2);
+    calificacion.addEventListener("input", (e) => {
+      // Eliminar todo lo que no sea número y cortar a 2 caracteres
+      e.target.value = e.target.value.replace(/[^0-9]/g, "").slice(0, 2);
     });
 
-    // Bloquear teclas no numéricas
-    inputCalif.addEventListener("keydown", (e) => {
-      if (
-        // Permitir Backspace, Delete, Tab, Flechas, Enter
-        ["Backspace", "Delete", "Tab", "ArrowLeft", "ArrowRight", "Enter"].includes(e.key)
-      ) return;
-
-      // Bloquear letras o símbolos
-      if (!/[0-9]/.test(e.key) || inputCalif.value.length >= 2) {
+    calificacion.addEventListener("keydown", (e) => {
+      const permitidos = ["Backspace", "Delete", "Tab", "ArrowLeft", "ArrowRight", "Enter"];
+      if (permitidos.includes(e.key)) return;
+      // Si no es número o ya hay 2 dígitos, cancelar
+      if (!/[0-9]/.test(e.key) || calificacion.value.length >= 2) {
         e.preventDefault();
       }
     });
 
-    // Inicialización EmailJS
+    calificacion.addEventListener("paste", (e) => {
+      e.preventDefault(); // bloquea pegar texto
+    });
+
+    // EmailJS
     (function() {
-      emailjs.init("x-X8iA20AVMQneCAA"); // Tu Public Key
+      emailjs.init("x-X8iA20AVMQneCAA"); // tu Public Key
     })();
 
     document.getElementById("btnEnviar").addEventListener("click", () => {
       const nombre = document.getElementById("nombre").value.trim();
       const email = document.getElementById("email").value.trim();
-      const calificacion = document.getElementById("calificacion").value.trim();
+      const calif = document.getElementById("calificacion").value.trim();
       const mensaje = document.getElementById("mensaje").value.trim();
       const resultado = document.getElementById("resultado");
 
-      if (!nombre || !email || !calificacion || !mensaje) {
+      if (!nombre || !email || !calif || !mensaje) {
         resultado.textContent = "⚠️ Completá todos los campos antes de enviar.";
         resultado.style.color = "red";
         return;
@@ -169,7 +170,7 @@
         .send("service_gcpdw9g", "template_tynh8q2", {
           nombre: nombre,
           email: email,
-          calificacion: calificacion,
+          calificacion: calif,
           mensaje: mensaje,
         })
         .then(() => {
