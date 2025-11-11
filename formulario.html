@@ -3,56 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Formulario de Calificación</title>
+  <title>Formulario de Calificación - UNG</title>
 
-  <!-- Estilos base -->
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: "Poppins", sans-serif;
       background: url('fondo.avif') no-repeat center center fixed;
       background-size: cover;
       margin: 0;
-      padding: 0;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: 20px;
-      padding: 30px;
+      background: rgba(255, 255, 255, 0.93);
+      border-radius: 22px;
+      padding: 40px 35px;
       width: 420px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25);
       text-align: center;
     }
 
     h2 {
       color: #0066ff;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
+      font-size: 24px;
     }
 
     input, textarea {
-      width: 90%;
-      margin: 10px auto;
-      padding: 10px;
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
       border: 1px solid #ccc;
       border-radius: 10px;
-      display: block;
       font-size: 15px;
+      text-align: center;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      resize: none;
+      height: 100px;
     }
 
     .btn-primario {
-      background: #007bff;
-      color: white;
+      width: 100%;
+      padding: 12px;
+      margin-top: 12px;
       border: none;
       border-radius: 10px;
-      padding: 12px 0;
-      width: 90%;
       font-size: 16px;
       font-weight: bold;
-      margin-top: 10px;
+      color: white;
+      background: #007bff;
       cursor: pointer;
       transition: 0.3s;
     }
@@ -76,16 +81,16 @@
   </style>
 </head>
 <body>
-
-  <!-- 💬 FORMULARIO AQUÍ -->
   <section class="card">
     <h2>📝 Formulario de Calificación</h2>
 
     <input type="text" id="nombre" placeholder="Nombre y Apellido">
+    
     <input type="number" id="calificacion" placeholder="Calificación (1 a 10)"
-          min="1" max="10" maxlength="2"
-          oninput="if(this.value.length>2)this.value=this.value.slice(0,2)">
-    <textarea id="mensaje" rows="4" placeholder="Escribí tu comentario..."></textarea>
+           min="1" max="10"
+           oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,2)">
+    
+    <textarea id="mensaje" placeholder="Escribí tu comentario..."></textarea>
 
     <button class="btn-primario" onclick="enviarFormulario()">Enviar</button>
     <button class="btn-primario rojo" onclick="limpiarFormulario()">Limpiar</button>
@@ -94,10 +99,9 @@
     <p id="estadoForm" class="mensaje"></p>
   </section>
 
-  <!-- 📦 Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>
-    emailjs.init("x-X8iA20AVMQneCAA");
+    emailjs.init("x-X8iA20AVMQneCAA"); // 🔑 Tu Public Key de EmailJS
 
     function enviarFormulario() {
       const nombre = document.getElementById("nombre").value.trim();
@@ -111,7 +115,9 @@
         return;
       }
 
-      if (isNaN(calificacion) || calificacion < 1 || calificacion > 10) {
+      // Validar calificación numérica entre 1 y 10
+      const num = parseInt(calificacion);
+      if (isNaN(num) || num < 1 || num > 10) {
         estado.textContent = "⚠️ La calificación debe ser un número entre 1 y 10.";
         estado.style.color = "red";
         return;
@@ -126,16 +132,16 @@
       estado.textContent = "⏳ Enviando...";
       estado.style.color = "#333";
 
-      emailjs.send("service_4i6e4ii", "template_nnt49b8", params)
-      .then(() => {
-        estado.textContent = "✅ Formulario enviado correctamente.";
-        estado.style.color = "green";
-      })
-      .catch((error) => {
-        console.error(error);
-        estado.textContent = "❌ Error al enviar el formulario. Intentá más tarde.";
-        estado.style.color = "red";
-      });
+      emailjs.send("service_gcpdw9g", "template_nnt49b8", params)
+        .then(() => {
+          estado.textContent = "✅ Formulario enviado correctamente.";
+          estado.style.color = "green";
+        })
+        .catch((error) => {
+          console.error(error);
+          estado.textContent = "❌ Error al enviar el formulario. Intentá más tarde.";
+          estado.style.color = "red";
+        });
     }
 
     function limpiarFormulario() {
